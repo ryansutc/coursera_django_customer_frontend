@@ -1,2 +1,3 @@
-# coursera_django_customer_frontend
-A simple frontend client prototype with React for the coursera django backend REST API app
+## Little Lemon Restaurant App - Frontend for Coursera Django Course API
+
+This is a rough example app showing how to create a frontend based upon a moder OpenAPI / Swagger specification for a REST API app.
