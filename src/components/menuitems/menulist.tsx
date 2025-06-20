@@ -37,7 +37,7 @@ export default function MenuList() {
           key={item.id}
           title={item.name}
           price={item.price}
-          id={item.id.toString()}
+          id={item.id}
           inventory={10} // Assuming a static inventory for now
           category="Main Course" // Assuming a static category for now
         />

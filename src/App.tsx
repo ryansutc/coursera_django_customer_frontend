@@ -13,13 +13,29 @@ import { StateContext } from "./contexts";
 
 function App() {
   const [page, setPage] = useState("menu");
+  const [cartItems, setCartItems] = useState<
+    { id: number; quantity: number }[] | []
+  >([]);
+
+  const [cartOpen, setCartOpen] = useState(false);
 
   const [user, setUser] = useState(null);
   return (
     <>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-        <StateContext value={{ page, setPage, user, setUser }}>
+        <StateContext
+          value={{
+            cartItems,
+            page,
+            setPage,
+            user,
+            setUser,
+            setCartItems,
+            cartOpen,
+            setCartOpen,
+          }}
+        >
           <Container
             maxWidth="md"
             component="main"

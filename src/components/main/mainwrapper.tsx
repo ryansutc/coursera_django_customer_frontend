@@ -1,16 +1,18 @@
 import { useContext } from "react";
 
 import { StateContext } from "@/contexts";
-import {
-  Grid,
-  Typography,
-} from "@mui/material";
+import { useCartOpenOnChange } from "@/hooks/cartOpen";
+import { Grid } from "@mui/material";
 
+import CartDrawer from "../cart/cartDrawer";
+import LoginForm from "../login/loginForm";
 import MenuList from "../menuitems/menulist";
 
 export default function MainWrapper() {
   // page state
-  const { page, user } = useContext(StateContext);
+  
+  const { page, user, cartItems, cartOpen, setCartOpen } = useContext(StateContext);
+  useCartOpenOnChange(cartItems, setCartOpen);
   return (
     <Grid
       id="rootWrapper"
@@ -20,8 +22,10 @@ export default function MainWrapper() {
       style={{ width: "100%" }}
       size={12}
     >
-      <Typography variant="h3">{page} </Typography>
-      {page === "menu" ? <MenuList /> : null}
+      {page === "menu" ? <MenuList /> : <LoginForm />}
+      {page === "menu" ? (
+        <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+      ) : null}
     </Grid>
   );
 }

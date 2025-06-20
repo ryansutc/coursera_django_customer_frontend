@@ -13,7 +13,8 @@ const StyledButton = styled(Button)(() => ({
 
 export default function NavBarMenu() {
   // page state
-  const { page, user, setPage } = useContext(StateContext);
+  const { cartItems, page, user, setPage, setUser, setCartOpen, cartOpen } =
+    useContext(StateContext);
 
   return (
     <>
@@ -29,7 +30,20 @@ export default function NavBarMenu() {
           Menu
         </StyledButton>
       </Fade>
-
+      {user && page === "menu" ? (
+        <Fade in timeout={300}>
+          <StyledButton
+            variant="text"
+            color="primary"
+            sx={{
+              color: cartItems.length ? "primary.main" : "primary.dark",
+            }}
+            onClick={() => setCartOpen(!cartOpen)}
+          >
+            {"Cart"}
+          </StyledButton>
+        </Fade>
+      ) : null}
       <Fade in timeout={300}>
         <StyledButton
           variant="text"
@@ -37,7 +51,13 @@ export default function NavBarMenu() {
           sx={{
             color: page === "login" ? "primary.main" : "primary.dark",
           }}
-          onClick={() => setPage("login")}
+          onClick={() => {
+            if (user) {
+              // Logout logic
+              setUser(null);
+            }
+            setPage("login");
+          }}
         >
           {user ? "Logout" : "Login"}
         </StyledButton>
