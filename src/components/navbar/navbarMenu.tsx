@@ -1,5 +1,6 @@
-import { Button, CircularProgress, Fade, styled } from "@mui/material";
+import { Badge, Button, CircularProgress, Fade, styled } from "@mui/material";
 
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useState } from "react";
 import { useStateContext } from "@/contexts";
 import { zodiosAPI } from "@/types/axiosClient";
@@ -56,7 +57,10 @@ export default function NavBarMenu() {
             }}
             onClick={() => setCartOpen(!cartOpen)}
           >
-            {"Cart"}
+            Cart{" "}
+            <Badge badgeContent={cartItems.length} color="error">
+              <ShoppingCartIcon fontSize="small" />
+            </Badge>
           </StyledButton>
         </Fade>
       ) : null}

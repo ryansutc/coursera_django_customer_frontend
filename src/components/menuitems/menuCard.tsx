@@ -48,7 +48,7 @@ export default function MenuCard({
       setCartItems([
         ...cartItems.filter((item) => item.id !== id), // Remove existing item if it exists
         {
-          id,
+          menuitem: id,
           quantity: existingItem?.quantity ? existingItem.quantity + 1 : 1,
         },
       ]);

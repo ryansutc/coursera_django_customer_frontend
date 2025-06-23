@@ -1,7 +1,8 @@
 import type { CartItemType, MenuItemType } from "@/types/django_api_types";
+import { Container, Drawer, IconButton } from "@mui/material";
 
 import CartItemCard from "./cartItemCard";
-import { Drawer } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useMemo } from "react";
 import { useStateContext } from "@/contexts";
 
@@ -15,7 +16,9 @@ export default function CartDrawer({
   const { cartItems, menuItems } = useStateContext();
 
   type UserCartItemType = CartItemType & Pick<MenuItemType, "title" | "price">;
-
+  const handleClose = () => {
+    onClose(); // Call the onClose function passed as a prop
+  };
   const userCartItems: UserCartItemType[] | [] = useMemo(() => {
     // This effect can be used to perform any side effects when cartItems or menuItems change
     return cartItems.map((cartItem) => {
@@ -30,23 +33,33 @@ export default function CartDrawer({
       };
     });
   }, [cartItems, menuItems]);
-  console.log("userCartItems", userCartItems);
+
   return (
     <Drawer
       anchor="right"
       open={open} // This should be controlled by a state variable
       onClose={onClose} // This should be a function to close the drawer
       id="cart-drawer"
+      sx={{ minWidth: "300px", padding: "12px" }}
     >
-      <h2>Cart Items</h2>
-      {userCartItems.map((item) => (
-        <CartItemCard
-          key={item.id}
-          title={item.title}
-          price={item.price}
-          quantity={item.quantity ?? 0}
-        />
-      ))}
+      <Container>
+        <IconButton
+          onClick={handleClose}
+          size="small"
+          sx={{ float: "right", marginRight: "-14px" }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <h2>Cart Items</h2>
+        {userCartItems.map((item) => (
+          <CartItemCard
+            key={item.menuitem}
+            title={item.title}
+            price={item.price}
+            quantity={item.quantity ?? 0}
+          />
+        ))}
+      </Container>
     </Drawer>
   );
 }

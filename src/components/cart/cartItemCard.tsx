@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 
 export default function CartItemCard({
   title,
@@ -12,18 +12,24 @@ export default function CartItemCard({
   quantity: number;
 }) {
   return (
-    <Grid container size={12} spacing={2} sx={{ height: "240px" }}>
-      <Grid size={4}>
-        {/* Cart item content goes here */}
-        <Box sx={{ bgColor: "primary.light" }}></Box>
+    <>
+      <Grid
+        container
+        size={12}
+        spacing={2}
+        sx={{ minHeight: "40px", margin: "12px" }}
+      >
+        <Grid size={4} sx={{ bgcolor: "secondary.light" }}>
+          {/* Cart item content goes here */}
+          <Box>Image here</Box>
+        </Grid>
+        <Grid size={8}>
+          {/* Cart item content goes here */}
+          <Typography variant="h6">{title}</Typography>
+          <Typography variant="body1">Price: ${price.toFixed(2)}</Typography>
+        </Grid>
       </Grid>
-      <Grid size={8}>
-        {/* Cart item content goes here */}
-        <Typography variant="h6">{title}</Typography>
-        <Typography variant="body1">Price: ${price.toFixed(2)}</Typography>
-        <input type="number">Quantity: {quantity}</input>
-      </Grid>
-      {/* Add more cart items as needed */}
-    </Grid>
+      <Divider flexItem />
+    </>
   );
 }

@@ -9,10 +9,17 @@ import useUserInfo from "@/hooks/userInfo";
 export default function MainWrapper() {
   // page state
 
-  const { page, user, cartItems, cartOpen, setCartOpen, setUser } =
-    useStateContext();
+  const {
+    page,
+    user,
+    cartItems,
+    cartOpen,
+    setCartItems,
+    setCartOpen,
+    setUser,
+  } = useStateContext();
   useCartOpenOnChange(cartItems, setCartOpen);
-  useUserInfo(user, setUser);
+  useUserInfo(user, setUser, setCartItems);
   return (
     <Grid
       id="rootWrapper"
