@@ -1,27 +1,26 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import MenuCard from "./menuCard";
+import { schemas } from "@/types/django_api";
+import { z } from "zod";
+import { zodiosAPI } from "@/types/axiosClient";
+
+type MenuItemType = z.infer<typeof schemas.MenuItem>;
 
 export default function MenuList() {
-  const [menuItems, setMenuItems] = useState<
-    { id: number; name: string; price: number }[] | []
-  >([]);
+  const [menuItems, setMenuItems] = useState<MenuItemType[] | []>([]);
+
   useEffect(() => {
     // This is where you would fetch the menu items from an API or context
     const fetchMenuItems = async () => {
-      // Simulating an API call
-      const items = [
-        { id: 1, name: "Pizza", price: 9.99 },
-        { id: 2, name: "Burger", price: 7.99 },
-        { id: 3, name: "Pasta", price: 8.99 },
-      ];
-      setMenuItems(items);
+      // @ts-expect-error method does not exist.
+      const menuItems = await zodiosAPI.api_menu_items_list();
+
+      setMenuItems(menuItems);
     };
     fetchMenuItems();
   }, []);
+
   return (
     <div
       id="wrapperMenuList"
@@ -35,7 +34,7 @@ export default function MenuList() {
       {menuItems.map((item) => (
         <MenuCard
           key={item.id}
-          title={item.name}
+          title={item.title}
           price={item.price}
           id={item.id}
           inventory={10} // Assuming a static inventory for now
