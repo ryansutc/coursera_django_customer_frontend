@@ -209,6 +209,18 @@ paths:
                 type: object
                 additionalProperties: {}
           description: Your cart is empty.
+  /api/cart-items/delete/:
+    delete:
+      operationId: api_cart_items_delete_destroy
+      tags:
+        - api
+      security:
+        - jwtAuth: []
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        "204":
+          description: No response body
   /api/categories/:
     get:
       operationId: api_categories_list

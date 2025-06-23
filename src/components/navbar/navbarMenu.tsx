@@ -1,11 +1,8 @@
-import { useContext } from "react";
+import { Button, CircularProgress, Fade, styled } from "@mui/material";
 
-import { StateContext } from "@/contexts";
-import {
-  Button,
-  Fade,
-  styled,
-} from "@mui/material";
+import { useState } from "react";
+import { useStateContext } from "@/contexts";
+import { zodiosAPI } from "@/types/axiosClient";
 
 const StyledButton = styled(Button)(() => ({
   textTransform: "none",
@@ -14,8 +11,27 @@ const StyledButton = styled(Button)(() => ({
 export default function NavBarMenu() {
   // page state
   const { cartItems, page, user, setPage, setUser, setCartOpen, cartOpen } =
-    useContext(StateContext);
+    useStateContext();
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const handleLoginLogout = async () => {
+    if (user) {
+      // Logout logic
+      try {
+        setIsLoggingOut(true);
+
+        // we need to make a method to remove ALL cart items when a user logs out.
+        await zodiosAPI.api_cart_items_delete_destroy();
+        localStorage.clear();
+      } catch (error) {
+        console.error("Logout failed:", error);
+      } finally {
+        setTimeout(() => setIsLoggingOut(false), 500);
+      }
+    }
+    setPage("login");
+    setUser(null);
+  };
   return (
     <>
       <Fade in timeout={600}>
@@ -51,15 +67,16 @@ export default function NavBarMenu() {
           sx={{
             color: page === "login" ? "primary.main" : "primary.dark",
           }}
-          onClick={() => {
-            if (user) {
-              // Logout logic
-              setUser(null);
-            }
-            setPage("login");
-          }}
+          onClick={handleLoginLogout}
+          title={user ? user : "Login to make an order!"}
         >
-          {user ? "Logout" : "Login"}
+          {isLoggingOut ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : user ? (
+            "Logout"
+          ) : (
+            "Login"
+          )}
         </StyledButton>
       </Fade>
     </>

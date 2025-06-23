@@ -1,18 +1,18 @@
-import { useContext } from "react";
-
-import { StateContext } from "@/contexts";
-import { useCartOpenOnChange } from "@/hooks/cartOpen";
-import { Grid } from "@mui/material";
-
 import CartDrawer from "../cart/cartDrawer";
+import { Grid } from "@mui/material";
 import LoginForm from "../login/loginForm";
 import MenuList from "../menuitems/menulist";
+import { useCartOpenOnChange } from "@/hooks/cartOpen";
+import { useStateContext } from "@/contexts";
+import useUserInfo from "@/hooks/userInfo";
 
 export default function MainWrapper() {
   // page state
-  
-  const { page, user, cartItems, cartOpen, setCartOpen } = useContext(StateContext);
+
+  const { page, user, cartItems, cartOpen, setCartOpen, setUser } =
+    useStateContext();
   useCartOpenOnChange(cartItems, setCartOpen);
+  useUserInfo(user, setUser);
   return (
     <Grid
       id="rootWrapper"

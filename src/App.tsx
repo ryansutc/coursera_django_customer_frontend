@@ -1,6 +1,7 @@
 import "./App.css";
 
-import type { CartItemType } from "@/types/django_api_types";
+import type { CartItemType, MenuItemType } from "@/types/django_api_types";
+
 import { Container } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import MainWrapper from "@components/main/mainwrapper";
@@ -14,7 +15,7 @@ import { useState } from "react";
 function App() {
   const [page, setPage] = useState<PageType>("menu" as PageType);
   const [cartItems, setCartItems] = useState<CartItemType[] | []>([]);
-
+  const [menuItems, setMenuItems] = useState<MenuItemType[] | []>([]);
   const [cartOpen, setCartOpen] = useState(false);
 
   const [user, setUser] = useState<string | null>(null);
@@ -25,6 +26,8 @@ function App() {
         <StateContext.Provider
           value={{
             cartItems,
+            menuItems,
+            setMenuItems,
             page,
             setPage,
             user,

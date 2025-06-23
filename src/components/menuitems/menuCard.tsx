@@ -30,18 +30,30 @@ export default function MenuCard({
 
     try {
       const existingItem = cartItems.find((v) => v.id === id);
-      // @ts-expect-error method does not exist.
-      await zodiosAPI.api_cart_items_create({
-        menu_item: id,
-        quantity: existingItem?.quantity ? existingItem.quantity + 1 : 1,
-      });
+      let newOrModifiedItem = null;
+      if (!existingItem) {
+        // @ts-expect-error method does not exist.
+        newOrModifiedItem = await zodiosAPI.api_cart_items_create({
+          menuitem: id,
+          quantity: 1,
+        });
+      } else {
+        // @ts-expect-error method does not exist.
+        newOrModifiedItem = await zodiosAPI.api_cart_items_partial_update({
+          menuitem: id,
+          quantity: existingItem?.quantity ? existingItem.quantity + 1 : 1,
+        });
+      }
 
       setCartItems([
         ...cartItems.filter((item) => item.id !== id), // Remove existing item if it exists
-        { id, quantity: existingItem.quantity ? existingItem.quantity + 1 : 1 },
+        {
+          id,
+          quantity: existingItem?.quantity ? existingItem.quantity + 1 : 1,
+        },
       ]);
     } catch (error) {
-      console.error("Failed to add item to cart:", error);
+      console.error("Failed to add item to cart:", error.message);
     }
   };
   return (

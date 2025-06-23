@@ -1,14 +1,10 @@
-import { useEffect, useState } from "react";
-
 import MenuCard from "./menuCard";
-import { schemas } from "@/types/django_api";
-import { z } from "zod";
+import { useEffect } from "react";
+import { useStateContext } from "@/contexts";
 import { zodiosAPI } from "@/types/axiosClient";
 
-type MenuItemType = z.infer<typeof schemas.MenuItem>;
-
 export default function MenuList() {
-  const [menuItems, setMenuItems] = useState<MenuItemType[] | []>([]);
+  const { menuItems, setMenuItems } = useStateContext();
 
   useEffect(() => {
     // This is where you would fetch the menu items from an API or context

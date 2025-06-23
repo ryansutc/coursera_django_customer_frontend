@@ -322,9 +322,16 @@ export const endpoints = makeApi([
       {
         status: 400,
         description: `Your cart is empty.`,
-        schema: z.object({}).partial().passthrough(),
+        schema: z.object({}).partial().strip(),
       },
     ],
+  },
+  {
+    method: "delete",
+    path: "/api/cart-items/delete/",
+    alias: "api_cart_items_delete_destroy",
+    requestFormat: "json",
+    response: z.void(),
   },
   {
     method: "get",
@@ -748,7 +755,7 @@ export const endpoints = makeApi([
       {
         status: 403,
         description: `Forbidden`,
-        schema: z.object({}).partial().passthrough(),
+        schema: z.object({}).partial().strip(),
       },
     ],
   },
@@ -770,7 +777,7 @@ export const endpoints = makeApi([
       {
         status: 403,
         description: `Forbidden`,
-        schema: z.object({}).partial().passthrough(),
+        schema: z.object({}).partial().strip(),
       },
     ],
   },
@@ -792,7 +799,7 @@ export const endpoints = makeApi([
       {
         status: 403,
         description: `Forbidden`,
-        schema: z.object({}).partial().passthrough(),
+        schema: z.object({}).partial().strip(),
       },
     ],
   },
@@ -831,10 +838,10 @@ token pair to prove the authentication of those credentials.`,
       {
         name: "body",
         type: "Body",
-        schema: z.object({ refresh: z.string() }).passthrough(),
+        schema: z.object({ refresh: z.string() }).strip(),
       },
     ],
-    response: z.object({ refresh: z.string() }).passthrough(),
+    response: z.object({ refresh: z.string() }).strip(),
   },
   {
     method: "post",
@@ -1027,10 +1034,10 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: z.object({ email: z.string().email() }).passthrough(),
+        schema: z.object({ email: z.string().email() }).strip(),
       },
     ],
-    response: z.object({ email: z.string().email() }).passthrough(),
+    response: z.object({ email: z.string().email() }).strip(),
   },
   {
     method: "post",
@@ -1055,10 +1062,10 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: z.object({ email: z.string().email() }).passthrough(),
+        schema: z.object({ email: z.string().email() }).strip(),
       },
     ],
-    response: z.object({ email: z.string().email() }).passthrough(),
+    response: z.object({ email: z.string().email() }).strip(),
   },
   {
     method: "post",
@@ -1079,7 +1086,7 @@ token if the refresh token is valid.`,
                 "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
               ),
           })
-          .passthrough(),
+          .strip(),
       },
     ],
     response: z
@@ -1092,7 +1099,7 @@ token if the refresh token is valid.`,
             "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
           ),
       })
-      .passthrough(),
+      .strip(),
   },
   {
     method: "post",
@@ -1103,10 +1110,10 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: z.object({ email: z.string().email() }).passthrough(),
+        schema: z.object({ email: z.string().email() }).strip(),
       },
     ],
-    response: z.object({ email: z.string().email() }).passthrough(),
+    response: z.object({ email: z.string().email() }).strip(),
   },
   {
     method: "post",
