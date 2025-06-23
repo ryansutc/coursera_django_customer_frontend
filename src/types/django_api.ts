@@ -35,7 +35,6 @@ export const PatchedMenuItem = generated.schemas.PatchedMenuItem.extend({
 }).omit({
   category: true,
   price_after_tax: true,
-  stock: true,
   id: true,
 });
 
