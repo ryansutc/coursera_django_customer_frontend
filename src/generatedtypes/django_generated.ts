@@ -3,14 +3,14 @@ import { z } from "zod";
 
 const AuthToken = z
   .object({ username: z.string(), password: z.string(), token: z.string() })
-  .passthrough();
+  .strip();
 const CartItem = z
   .object({
     id: z.number().int(),
     menuitem: z.number().int(),
     quantity: z.number().int().gte(0).lte(40).optional(),
   })
-  .passthrough();
+  .strip();
 const PatchedCartItem = z
   .object({
     id: z.number().int(),
@@ -18,10 +18,10 @@ const PatchedCartItem = z
     quantity: z.number().int().gte(0).lte(40),
   })
   .partial()
-  .passthrough();
+  .strip();
 const CheckoutResponse = z
   .object({ detail: z.string(), order_id: z.number().int() })
-  .passthrough();
+  .strip();
 const Category = z
   .object({
     id: z.number().int(),
@@ -31,7 +31,7 @@ const Category = z
       .max(50)
       .regex(/^[-a-zA-Z0-9_]+$/),
   })
-  .passthrough();
+  .strip();
 const PatchedCategory = z
   .object({
     id: z.number().int(),
@@ -42,7 +42,7 @@ const PatchedCategory = z
       .regex(/^[-a-zA-Z0-9_]+$/),
   })
   .partial()
-  .passthrough();
+  .strip();
 const MenuItem = z
   .object({
     id: z.number().int(),
@@ -54,7 +54,7 @@ const MenuItem = z
     category_id: z.number().int(),
     featured: z.boolean().optional(),
   })
-  .passthrough();
+  .strip();
 const PatchedMenuItem = z
   .object({
     id: z.number().int(),
@@ -67,7 +67,7 @@ const PatchedMenuItem = z
     featured: z.boolean(),
   })
   .partial()
-  .passthrough();
+  .strip();
 const Order = z
   .object({
     id: z.number().int(),
@@ -77,7 +77,7 @@ const Order = z
     total: z.string().regex(/^-?\d{0,4}(?:\.\d{0,2})?$/),
     date: z.string(),
   })
-  .passthrough();
+  .strip();
 const TokenObtainPair = z
   .object({
     username: z.string(),
@@ -85,15 +85,15 @@ const TokenObtainPair = z
     access: z.string(),
     refresh: z.string(),
   })
-  .passthrough();
-const TokenBlacklist = z.object({ refresh: z.string() }).passthrough();
+  .strip();
+const TokenBlacklist = z.object({ refresh: z.string() }).strip();
 const TokenRefresh = z
   .object({ access: z.string(), refresh: z.string() })
-  .passthrough();
+  .strip();
 const TokenCreate = z
   .object({ password: z.string(), username: z.string() })
   .partial()
-  .passthrough();
+  .strip();
 const User = z
   .object({
     email: z.string().max(254).email().optional(),
@@ -103,7 +103,7 @@ const User = z
         "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
       ),
   })
-  .passthrough();
+  .strip();
 const UserCreate = z
   .object({
     email: z.string().max(254).email().optional(),
@@ -116,7 +116,7 @@ const UserCreate = z
       ),
     password: z.string(),
   })
-  .passthrough();
+  .strip();
 const PatchedUser = z
   .object({
     email: z.string().max(254).email(),
@@ -127,14 +127,12 @@ const PatchedUser = z
       ),
   })
   .partial()
-  .passthrough();
-const Activation = z
-  .object({ uid: z.string(), token: z.string() })
-  .passthrough();
-const SendEmailReset = z.object({ email: z.string().email() }).passthrough();
+  .strip();
+const Activation = z.object({ uid: z.string(), token: z.string() }).strip();
+const SendEmailReset = z.object({ email: z.string().email() }).strip();
 const PasswordResetConfirm = z
   .object({ uid: z.string(), token: z.string(), new_password: z.string() })
-  .passthrough();
+  .strip();
 const UsernameResetConfirm = z
   .object({
     new_username: z
@@ -145,10 +143,10 @@ const UsernameResetConfirm = z
         "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
       ),
   })
-  .passthrough();
+  .strip();
 const SetPassword = z
   .object({ new_password: z.string(), current_password: z.string() })
-  .passthrough();
+  .strip();
 const SetUsername = z
   .object({
     current_password: z.string(),
@@ -160,7 +158,7 @@ const SetUsername = z
         "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
       ),
   })
-  .passthrough();
+  .strip();
 const Rating = z
   .object({
     user: z.number().int().optional(),
@@ -171,7 +169,7 @@ const Rating = z
       .lte(9223372036854776000),
     rating: z.number().int().gte(0).lte(5),
   })
-  .passthrough();
+  .strip();
 
 export const schemas = {
   AuthToken,

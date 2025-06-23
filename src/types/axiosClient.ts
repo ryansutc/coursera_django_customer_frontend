@@ -1,8 +1,9 @@
 import { API_BASE_URL } from "@/utils/environment";
 import { Zodios } from "@zodios/core";
-// Import or define MapItems
-import { endpoints as endpoints_generated } from "../../generatedtypes/django_generated";
 // Import makeAPI from its module or define it here
+import { axiosInstance } from "@/api/axiosInstance";
+import { endpoints as endpoints_generated } from "@/generatedtypes/django_generated";
+// Import or define MapItems
 import { makeApi } from "@zodios/core";
 import { schemas } from "./django_api";
 import z from "zod";
@@ -23,13 +24,37 @@ const endpoints = makeApi(
         response: z.array(schemas.MenuItem),
       };
     }
+
+    // override the token generate one, which is wrong from openapi-zodclient
+    if (ep.method === "post" && ep.path === "/api/token/") {
+      const newParams = ep.parameters.map((p) => ({
+        ...p,
+        schema: schemas.TokenObtainPairWrite,
+      }));
+      return {
+        ...ep,
+        parameters: newParams,
+        response: schemas.TokenObtainPair,
+      };
+    }
+
+    // fix cart items
+    if (ep.method === "post" && ep.path === "/api/cart-items/") {
+      const newParams = ep.parameters.map((p) => ({
+        ...p,
+        schema: schemas.CartItemWrite,
+      }));
+
+      return {
+        ...ep,
+        parameters: newParams,
+      };
+    }
+
     return ep;
   })
 );
 
-// export const zodiosAPI = new Zodios(API_BASE_URL, endpoints, {
-//   transform: false,
-//   validate: false,
-// });
-
-export const zodiosAPI = new Zodios(API_BASE_URL, endpoints);
+export const zodiosAPI = new Zodios(API_BASE_URL, endpoints, {
+  axiosInstance,
+});

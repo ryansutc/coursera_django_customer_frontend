@@ -1,10 +1,4 @@
 import {
-  useContext,
-  useState,
-} from "react";
-
-import { StateContext } from "@/contexts";
-import {
   Box,
   Button,
   Container,
@@ -13,18 +7,37 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useState } from "react";
+import { useStateContext } from "@/contexts";
+import { zodiosAPI } from "@/types/axiosClient";
+
 export default function LoginForm() {
-  const { setUser, setPage } = useContext(StateContext);
+  const { setUser, setPage } = useStateContext();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Accept any login for now
+    // we need to hit the REST API login endpoint
+
     if (username && password) {
-      setUser({ username });
-      setPage("menu");
+      try {
+        // @ts-expect-error method does not exist.
+        const response = await zodiosAPI.api_token_create({
+          username,
+          password,
+        });
+
+        localStorage.setItem("token", response.access);
+        localStorage.setItem("refreshToken", response.refresh);
+        setUser(username);
+        setPage("menu");
+      } catch (e) {
+        console.error("Login failed:", e);
+        setError("Invalid username or password.");
+        return;
+      }
     } else {
       setError("Please enter both username and password.");
     }

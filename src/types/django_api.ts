@@ -1,4 +1,4 @@
-import * as generated from "../../generatedtypes/django_generated";
+import * as generated from "@/generatedtypes/django_generated";
 
 import { z } from "zod";
 
@@ -15,23 +15,22 @@ const decimalStringToNumber = z
   .string()
   .pipe(z.coerce.number().transform(Number));
 
+// -- cart items
+const CartItemWrite = generated.schemas.CartItem.omit({
+  id: true,
+});
+const PatchedCartItem = generated.schemas.CartItem.omit({
+  menuitem: true,
+});
+
 // --- MenuItem wrappers ---
-export const MenuItem = generated.schemas.MenuItem.extend({
+const MenuItem = generated.schemas.MenuItem.extend({
   price: decimalStringToNumber,
   price_after_tax: decimalStringToNumber,
 }).omit({ category_id: true });
 
-export const MenuItemWrite = generated.schemas.MenuItem.extend({
+const MenuItemWrite = generated.schemas.MenuItem.extend({
   price: decimalStringToNumber,
-}).omit({
-  category: true,
-  price_after_tax: true,
-  id: true,
-});
-
-// --- PatchedMenuItem wrapper ---
-export const PatchedMenuItem = generated.schemas.PatchedMenuItem.extend({
-  price: decimalStringToNumber.optional(),
 }).omit({
   category: true,
   price_after_tax: true,
@@ -39,21 +38,43 @@ export const PatchedMenuItem = generated.schemas.PatchedMenuItem.extend({
 });
 
 // --- Order wrappers ---
-export const Order = generated.schemas.Order.extend({
+const Order = generated.schemas.Order.extend({
   total: decimalStringToNumber,
 });
 
-export const OrderWrite = generated.schemas.Order.omit({
+const OrderWrite = generated.schemas.Order.omit({
   id: true,
   date: true,
+});
+
+const TokenObtainPair = generated.schemas.TokenObtainPair.omit({
+  username: true,
+  password: true,
+});
+const TokenObtainPairWrite = generated.schemas.TokenObtainPair.omit({
+  access: true,
+  refresh: true,
+});
+
+// --- PatchedMenuItem wrapper ---
+const PatchedMenuItem = generated.schemas.PatchedMenuItem.extend({
+  price: decimalStringToNumber.optional(),
+}).omit({
+  category: true,
+  price_after_tax: true,
+  id: true,
 });
 
 // Export all wrappers and types
 export const schemas = {
   ...generated.schemas,
+  CartItemWrite,
   MenuItem,
   MenuItemWrite,
+  PatchedCartItem,
   PatchedMenuItem,
   Order,
   OrderWrite,
+  TokenObtainPair,
+  TokenObtainPairWrite,
 };

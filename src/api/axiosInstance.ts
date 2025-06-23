@@ -1,5 +1,6 @@
+import axios, { AxiosError } from "axios";
+
 import { API_BASE_URL } from "@/utils/environment";
-import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -20,7 +21,7 @@ axiosInstance.interceptors.request.use((config) => {
 // ⚠️ Handle errors globally
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error: AxiosError) => {
     console.error("[API Error]", error.response || error.message);
     return Promise.reject(error);
   }

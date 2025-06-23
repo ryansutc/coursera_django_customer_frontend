@@ -1,6 +1,3 @@
-import { useContext } from "react";
-
-import { StateContext } from "@/contexts";
 import {
   Box,
   Button,
@@ -9,6 +6,9 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+
+import { useStateContext } from "@/contexts";
+import { zodiosAPI } from "@/types/axiosClient";
 
 type MenuCardProps = {
   id: number;
@@ -23,16 +23,26 @@ export default function MenuCard({
   category,
   id,
 }: MenuCardProps) {
-  const { cartItems, setCartItems } = useContext(StateContext);
-  const handleAddToCart = (id: number) => {
+  const { cartItems, setCartItems } = useStateContext();
+  const handleAddToCart = async (id: number) => {
     // Logic to add the item to the cart
     console.log(`Added ${title} to cart`);
 
-    const existingItem = cartItems.find((v) => v.id === id);
-    setCartItems([
-      ...cartItems.filter((item) => item.id !== id), // Remove existing item if it exists
-      { id, count: existingItem ? existingItem.quantity + 1 : 1 },
-    ]);
+    try {
+      const existingItem = cartItems.find((v) => v.id === id);
+      // @ts-expect-error method does not exist.
+      await zodiosAPI.api_cart_items_create({
+        menu_item: id,
+        quantity: existingItem?.quantity ? existingItem.quantity + 1 : 1,
+      });
+
+      setCartItems([
+        ...cartItems.filter((item) => item.id !== id), // Remove existing item if it exists
+        { id, quantity: existingItem.quantity ? existingItem.quantity + 1 : 1 },
+      ]);
+    } catch (error) {
+      console.error("Failed to add item to cart:", error);
+    }
   };
   return (
     <Card

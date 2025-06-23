@@ -1,10 +1,18 @@
 import { useEffect, useRef } from "react";
 
-export function useCartOpenOnChange(cartItems: any[], setCartOpen: (open: boolean) => void) {
-  const prevItemsRef = useRef<any[]>(cartItems);
+import type { CartItemType } from "@/types/django_api_types";
+
+export function useCartOpenOnChange(
+  cartItems: CartItemType[],
+  setCartOpen: (open: boolean) => void
+) {
+  const prevItemsRef = useRef<CartItemType[]>(cartItems);
 
   useEffect(() => {
-    if (prevItemsRef.current !== cartItems && prevItemsRef.current.length !== cartItems.length) {
+    if (
+      prevItemsRef.current !== cartItems &&
+      prevItemsRef.current.length !== cartItems.length
+    ) {
       setCartOpen(true);
     }
     prevItemsRef.current = cartItems;

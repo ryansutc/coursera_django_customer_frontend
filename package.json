@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "schema": "openapi-zod-client ./docs/schema.yml --output ./generatedtypes/django_generated.ts --with-docs --with-description -p ./.prettierrc"
+    "schema": "openapi-zod-client ./docs/schema.yml --output ./src/generatedtypes/django_generated.ts --with-docs --with-description -p ./.prettierrc"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
