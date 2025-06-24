@@ -20,7 +20,7 @@ export default function CartDrawer({
     onClose(); // Call the onClose function passed as a prop
   };
   const userCartItems: UserCartItemType[] | [] = useMemo(() => {
-    // This effect can be used to perform any side effects when cartItems or menuItems change
+    // Keep the list of cart items in sync.
     return cartItems.map((cartItem) => {
       const menuItem = menuItems.find((item) => item.id === cartItem.menuitem);
       if (!menuItem) {
@@ -37,8 +37,8 @@ export default function CartDrawer({
   return (
     <Drawer
       anchor="right"
-      open={open} // This should be controlled by a state variable
-      onClose={onClose} // This should be a function to close the drawer
+      open={open}
+      onClose={onClose}
       id="cart-drawer"
       sx={{ minWidth: "300px", padding: "12px" }}
     >
