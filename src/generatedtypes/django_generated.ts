@@ -1,9 +1,10 @@
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
 
-const AuthToken = z
-  .object({ username: z.string(), password: z.string(), token: z.string() })
+const AuthTokenRequest = z
+  .object({ username: z.string().min(1), password: z.string().min(1) })
   .strip();
+const AuthToken = z.object({ token: z.string() }).strip();
 const CartItem = z
   .object({
     id: z.number().int(),
@@ -11,9 +12,14 @@ const CartItem = z
     quantity: z.number().int().gte(0).lte(40).optional(),
   })
   .strip();
-const PatchedCartItem = z
+const CartItemRequest = z
   .object({
-    id: z.number().int(),
+    menuitem: z.number().int(),
+    quantity: z.number().int().gte(0).lte(40).optional(),
+  })
+  .strip();
+const PatchedCartItemRequest = z
+  .object({
     menuitem: z.number().int(),
     quantity: z.number().int().gte(0).lte(40),
   })
@@ -32,12 +38,22 @@ const Category = z
       .regex(/^[-a-zA-Z0-9_]+$/),
   })
   .strip();
-const PatchedCategory = z
+const CategoryRequest = z
   .object({
-    id: z.number().int(),
-    title: z.string().max(255),
+    title: z.string().min(1).max(255),
     slug: z
       .string()
+      .min(1)
+      .max(50)
+      .regex(/^[-a-zA-Z0-9_]+$/),
+  })
+  .strip();
+const PatchedCategoryRequest = z
+  .object({
+    title: z.string().min(1).max(255),
+    slug: z
+      .string()
+      .min(1)
       .max(50)
       .regex(/^[-a-zA-Z0-9_]+$/),
   })
@@ -51,18 +67,23 @@ const MenuItem = z
     inventory: z.number().int().gte(0).lte(400).nullish(),
     price_after_tax: z.string(),
     category: Category,
+    featured: z.boolean().optional(),
+  })
+  .strip();
+const MenuItemRequest = z
+  .object({
+    title: z.string().min(1).max(255),
+    price: z.string().regex(/^-?\d{0,4}(?:\.\d{0,2})?$/),
+    inventory: z.number().int().gte(0).lte(400).nullish(),
     category_id: z.number().int(),
     featured: z.boolean().optional(),
   })
   .strip();
-const PatchedMenuItem = z
+const PatchedMenuItemRequest = z
   .object({
-    id: z.number().int(),
-    title: z.string().max(255),
+    title: z.string().min(1).max(255),
     price: z.string().regex(/^-?\d{0,4}(?:\.\d{0,2})?$/),
     inventory: z.number().int().gte(0).lte(400).nullable(),
-    price_after_tax: z.string(),
-    category: Category,
     category_id: z.number().int(),
     featured: z.boolean(),
   })
@@ -78,17 +99,18 @@ const Order = z
     date: z.string(),
   })
   .strip();
-const TokenObtainPair = z
-  .object({
-    username: z.string(),
-    password: z.string(),
-    access: z.string(),
-    refresh: z.string(),
-  })
+const TokenObtainPairRequest = z
+  .object({ username: z.string().min(1), password: z.string().min(1) })
   .strip();
-const TokenBlacklist = z.object({ refresh: z.string() }).strip();
-const TokenRefresh = z
+const TokenObtainPair = z
   .object({ access: z.string(), refresh: z.string() })
+  .strip();
+const TokenBlacklistRequest = z.object({ refresh: z.string().min(1) }).strip();
+const TokenRefreshRequest = z.object({ refresh: z.string().min(1) }).strip();
+const TokenRefresh = z.object({ access: z.string() }).strip();
+const TokenCreateRequest = z
+  .object({ password: z.string().min(1), username: z.string().min(1) })
+  .partial()
   .strip();
 const TokenCreate = z
   .object({ password: z.string(), username: z.string() })
@@ -104,6 +126,20 @@ const User = z
       ),
   })
   .strip();
+const UserCreateRequest = z
+  .object({
+    email: z.string().max(254).email().optional(),
+    username: z
+      .string()
+      .min(1)
+      .max(150)
+      .regex(/^[\w.@+-]+$/)
+      .describe(
+        "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+      ),
+    password: z.string().min(1),
+  })
+  .strip();
 const UserCreate = z
   .object({
     email: z.string().max(254).email().optional(),
@@ -114,24 +150,45 @@ const UserCreate = z
       .describe(
         "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
       ),
-    password: z.string(),
   })
   .strip();
-const PatchedUser = z
+const UserRequest = z
+  .object({ email: z.string().max(254).email() })
+  .partial()
+  .strip();
+const PatchedUserRequest = z
+  .object({ email: z.string().max(254).email() })
+  .partial()
+  .strip();
+const ActivationRequest = z
+  .object({ uid: z.string().min(1), token: z.string().min(1) })
+  .strip();
+const Activation = z.object({ uid: z.string(), token: z.string() }).strip();
+const SendEmailResetRequest = z
+  .object({ email: z.string().min(1).email() })
+  .strip();
+const SendEmailReset = z.object({ email: z.string().email() }).strip();
+const PasswordResetConfirmRequest = z
   .object({
-    email: z.string().max(254).email(),
-    username: z
+    uid: z.string().min(1),
+    token: z.string().min(1),
+    new_password: z.string().min(1),
+  })
+  .strip();
+const PasswordResetConfirm = z
+  .object({ uid: z.string(), token: z.string(), new_password: z.string() })
+  .strip();
+const UsernameResetConfirmRequest = z
+  .object({
+    new_username: z
       .string()
+      .min(1)
+      .max(150)
+      .regex(/^[\w.@+-]+$/)
       .describe(
         "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
       ),
   })
-  .partial()
-  .strip();
-const Activation = z.object({ uid: z.string(), token: z.string() }).strip();
-const SendEmailReset = z.object({ email: z.string().email() }).strip();
-const PasswordResetConfirm = z
-  .object({ uid: z.string(), token: z.string(), new_password: z.string() })
   .strip();
 const UsernameResetConfirm = z
   .object({
@@ -144,8 +201,27 @@ const UsernameResetConfirm = z
       ),
   })
   .strip();
+const SetPasswordRequest = z
+  .object({
+    new_password: z.string().min(1),
+    current_password: z.string().min(1),
+  })
+  .strip();
 const SetPassword = z
   .object({ new_password: z.string(), current_password: z.string() })
+  .strip();
+const SetUsernameRequest = z
+  .object({
+    current_password: z.string().min(1),
+    new_username: z
+      .string()
+      .min(1)
+      .max(150)
+      .regex(/^[\w.@+-]+$/)
+      .describe(
+        "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+      ),
+  })
   .strip();
 const SetUsername = z
   .object({
@@ -170,34 +246,61 @@ const Rating = z
     rating: z.number().int().gte(0).lte(5),
   })
   .strip();
+const RatingRequest = z
+  .object({
+    user: z.number().int().optional(),
+    menuitem_id: z
+      .number()
+      .int()
+      .gte(-9223372036854776000)
+      .lte(9223372036854776000),
+    rating: z.number().int().gte(0).lte(5),
+  })
+  .strip();
 
 export const schemas = {
+  AuthTokenRequest,
   AuthToken,
   CartItem,
-  PatchedCartItem,
+  CartItemRequest,
+  PatchedCartItemRequest,
   CheckoutResponse,
   Category,
-  PatchedCategory,
+  CategoryRequest,
+  PatchedCategoryRequest,
   MenuItem,
-  PatchedMenuItem,
+  MenuItemRequest,
+  PatchedMenuItemRequest,
   Order,
+  TokenObtainPairRequest,
   TokenObtainPair,
-  TokenBlacklist,
+  TokenBlacklistRequest,
+  TokenRefreshRequest,
   TokenRefresh,
+  TokenCreateRequest,
   TokenCreate,
   User,
+  UserCreateRequest,
   UserCreate,
-  PatchedUser,
+  UserRequest,
+  PatchedUserRequest,
+  ActivationRequest,
   Activation,
+  SendEmailResetRequest,
   SendEmailReset,
+  PasswordResetConfirmRequest,
   PasswordResetConfirm,
+  UsernameResetConfirmRequest,
   UsernameResetConfirm,
+  SetPasswordRequest,
   SetPassword,
+  SetUsernameRequest,
   SetUsername,
   Rating,
+  RatingRequest,
 };
 
-export const endpoints = makeApi([
+const endpoints = makeApi([
   {
     method: "post",
     path: "/api/api-token-auth/",
@@ -207,10 +310,10 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: AuthToken,
+        schema: AuthTokenRequest,
       },
     ],
-    response: AuthToken,
+    response: z.object({ token: z.string() }).strip(),
   },
   {
     method: "get",
@@ -228,7 +331,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: CartItem,
+        schema: CartItemRequest,
       },
     ],
     response: CartItem,
@@ -259,7 +362,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: CartItem,
+        schema: CartItemRequest,
       },
       {
         name: "id",
@@ -281,7 +384,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: PatchedCartItem,
+        schema: PatchedCartItemRequest,
       },
       {
         name: "id",
@@ -349,7 +452,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: Category,
+        schema: CategoryRequest,
       },
     ],
     response: Category,
@@ -380,7 +483,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: Category,
+        schema: CategoryRequest,
       },
       {
         name: "id",
@@ -402,7 +505,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: PatchedCategory,
+        schema: PatchedCategoryRequest,
       },
       {
         name: "id",
@@ -498,7 +601,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: MenuItem,
+        schema: MenuItemRequest,
       },
     ],
     response: z.array(MenuItem),
@@ -528,7 +631,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: MenuItem,
+        schema: MenuItemRequest,
       },
       {
         name: "id",
@@ -548,7 +651,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: PatchedMenuItem,
+        schema: PatchedMenuItemRequest,
       },
       {
         name: "id",
@@ -608,7 +711,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: MenuItem,
+        schema: MenuItemRequest,
       },
     ],
     response: MenuItem,
@@ -646,7 +749,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: CartItem,
+        schema: CartItemRequest,
       },
     ],
     response: CartItem,
@@ -677,7 +780,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: CartItem,
+        schema: CartItemRequest,
       },
       {
         name: "id",
@@ -699,7 +802,7 @@ export const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: PatchedCartItem,
+        schema: PatchedCartItemRequest,
       },
       {
         name: "id",
@@ -822,7 +925,7 @@ token pair to prove the authentication of those credentials.`,
       {
         name: "body",
         type: "Body",
-        schema: TokenObtainPair,
+        schema: TokenObtainPairRequest,
       },
     ],
     response: TokenObtainPair,
@@ -838,10 +941,10 @@ token pair to prove the authentication of those credentials.`,
       {
         name: "body",
         type: "Body",
-        schema: z.object({ refresh: z.string() }).strip(),
+        schema: z.object({ refresh: z.string().min(1) }).strip(),
       },
     ],
-    response: z.object({ refresh: z.string() }).strip(),
+    response: z.void(),
   },
   {
     method: "post",
@@ -854,10 +957,10 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: TokenRefresh,
+        schema: z.object({ refresh: z.string().min(1) }).strip(),
       },
     ],
-    response: TokenRefresh,
+    response: z.object({ access: z.string() }).strip(),
   },
   {
     method: "post",
@@ -869,7 +972,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: TokenCreate,
+        schema: TokenCreateRequest,
       },
     ],
     response: TokenCreate,
@@ -898,7 +1001,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: UserCreate,
+        schema: UserCreateRequest,
       },
     ],
     response: UserCreate,
@@ -926,7 +1029,10 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: User,
+        schema: z
+          .object({ email: z.string().max(254).email() })
+          .partial()
+          .strip(),
       },
       {
         name: "username",
@@ -945,7 +1051,10 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: PatchedUser,
+        schema: z
+          .object({ email: z.string().max(254).email() })
+          .partial()
+          .strip(),
       },
       {
         name: "username",
@@ -978,7 +1087,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: Activation,
+        schema: ActivationRequest,
       },
     ],
     response: Activation,
@@ -999,7 +1108,10 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: User,
+        schema: z
+          .object({ email: z.string().max(254).email() })
+          .partial()
+          .strip(),
       },
     ],
     response: User,
@@ -1013,7 +1125,10 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: PatchedUser,
+        schema: z
+          .object({ email: z.string().max(254).email() })
+          .partial()
+          .strip(),
       },
     ],
     response: User,
@@ -1034,7 +1149,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: z.object({ email: z.string().email() }).strip(),
+        schema: z.object({ email: z.string().min(1).email() }).strip(),
       },
     ],
     response: z.object({ email: z.string().email() }).strip(),
@@ -1048,7 +1163,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: PasswordResetConfirm,
+        schema: PasswordResetConfirmRequest,
       },
     ],
     response: PasswordResetConfirm,
@@ -1062,7 +1177,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: z.object({ email: z.string().email() }).strip(),
+        schema: z.object({ email: z.string().min(1).email() }).strip(),
       },
     ],
     response: z.object({ email: z.string().email() }).strip(),
@@ -1080,6 +1195,7 @@ token if the refresh token is valid.`,
           .object({
             new_username: z
               .string()
+              .min(1)
               .max(150)
               .regex(/^[\w.@+-]+$/)
               .describe(
@@ -1110,7 +1226,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: z.object({ email: z.string().email() }).strip(),
+        schema: z.object({ email: z.string().min(1).email() }).strip(),
       },
     ],
     response: z.object({ email: z.string().email() }).strip(),
@@ -1124,7 +1240,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: SetPassword,
+        schema: SetPasswordRequest,
       },
     ],
     response: SetPassword,
@@ -1138,7 +1254,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: SetUsername,
+        schema: SetUsernameRequest,
       },
     ],
     response: SetUsername,
@@ -1161,7 +1277,7 @@ token if the refresh token is valid.`,
       {
         name: "body",
         type: "Body",
-        schema: Rating,
+        schema: RatingRequest,
       },
     ],
     response: Rating,

@@ -31,7 +31,13 @@ export default function MainWrapper() {
     >
       {page === "menu" ? <MenuList /> : <LoginForm />}
       {page === "menu" ? (
-        <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+        <CartDrawer
+          open={cartOpen}
+          onClose={() => {
+            // I want to first save any changed cart item values back to the server
+            setCartOpen(false);
+          }}
+        />
       ) : null}
     </Grid>
   );

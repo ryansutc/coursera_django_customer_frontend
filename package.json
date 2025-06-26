@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "claude": "claude",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -16,6 +17,7 @@
     "@fontsource/roboto": "^5.2.6",
     "@mui/icons-material": "^7.1.2",
     "@mui/material": "^7.1.2",
+    "@tanstack/react-query": "^5.81.2",
     "@zodios/core": "^10.9.6",
     "axios": "^1.10.0",
     "react": "^19.1.0",
@@ -23,6 +25,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@anthropic-ai/claude-code": "^1.0.35",
     "@eslint/js": "^9.25.0",
     "@types/node": "^24.0.3",
     "@types/react": "^19.1.2",

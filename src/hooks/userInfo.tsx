@@ -14,19 +14,20 @@ export default function useUserInfo(
     async function setUserFromToken() {
       const token = localStorage.getItem("token");
       if (token) {
-        // @ts-expect-error method does not exist.
-        const me = await zodiosAPI.auth_users_me_retrieve(token);
+        const me = await zodiosAPI.auth_users_me_retrieve();
         console.log("User info from token:", me.username);
         setUser(me.username);
 
         // Sync our cart w. the server:
-        const cartItems = await zodiosAPI.api_cart_items_list(token);
+        const cartItems = await zodiosAPI.api_cart_items_list();
         setCartItems(cartItems);
       }
     }
+
     if (!user && localStorage.getItem("token")) {
       // If user is not set and there is a token, try to set user from token
       try {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         setUserFromToken();
       } catch (error) {
         console.error("Error setting user from token:", error);

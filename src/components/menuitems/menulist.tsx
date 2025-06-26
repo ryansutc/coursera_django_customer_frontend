@@ -9,13 +9,17 @@ export default function MenuList() {
   useEffect(() => {
     // This is where you would fetch the menu items from an API or context
     const fetchMenuItems = async () => {
-      // @ts-expect-error method does not exist.
-      const menuItems = await zodiosAPI.api_menu_items_list();
+      try {
+        const menuItems = await zodiosAPI.api_menu_items_list();
 
-      setMenuItems(menuItems);
+        setMenuItems(menuItems);
+      } catch (error) {
+        console.error("Failed to fetch menu items:", error);
+      }
     };
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchMenuItems();
-  }, []);
+  }, [setMenuItems]);
 
   return (
     <div
