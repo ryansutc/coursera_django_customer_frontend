@@ -1,7 +1,8 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, IconButton, Typography } from "@mui/material";
+import { useDeleteCartItem, useUpdateCartItem } from "@/hooks/useCartItems";
 
+import DeleteIcon from "@mui/icons-material/Delete";
 import NumberInput from "../common/NumberInput";
-import { useUpdateCartItem } from "@/hooks/useCartItems";
 
 export default function CartItemCard({
   id,
@@ -15,12 +16,17 @@ export default function CartItemCard({
   quantity: number;
 }) {
   const updateCartItem = useUpdateCartItem();
+  const deleteCartItem = useDeleteCartItem();
 
   const handleQuantityChange = (newQuantity: number) => {
     updateCartItem.mutate({
       id,
       data: { quantity: newQuantity },
     });
+  };
+
+  const handleDelete = () => {
+    deleteCartItem.mutate(id);
   };
 
   return (
@@ -37,15 +43,36 @@ export default function CartItemCard({
         </Grid>
         <Grid size={8}>
           {/* Cart item content goes here */}
-          <Typography variant="h6">{title}</Typography>
-          <Typography variant="body1">Price: ${price.toFixed(2)}</Typography>
-          <NumberInput
-            value={quantity}
-            onChange={handleQuantityChange}
-            min={1}
-            max={40}
-            disabled={updateCartItem.isPending}
-          />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
+            <Box>
+              <Typography variant="h6">{title}</Typography>
+              <Typography variant="body1">
+                Price: ${price.toFixed(2)}
+              </Typography>
+              <NumberInput
+                value={quantity}
+                onChange={handleQuantityChange}
+                min={1}
+                max={40}
+                disabled={updateCartItem.isPending}
+              />
+            </Box>
+            <IconButton
+              onClick={handleDelete}
+              disabled={deleteCartItem.isPending}
+              title="remove item from cart"
+              aria-label="Remove item from cart"
+              sx={{ color: "error.dark" }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
         </Grid>
       </Grid>
       <Divider flexItem />

@@ -1,11 +1,17 @@
 import type { CartItemType, MenuItemType } from "@/types/django_api_types";
-import { Container, Drawer, IconButton, CircularProgress, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Container,
+  Drawer,
+  IconButton,
+  Typography,
+} from "@mui/material";
 
 import CartItemCard from "./cartItemCard";
 import CloseIcon from "@mui/icons-material/Close";
+import { useCartItems } from "@/hooks/useCartItems";
 import { useMemo } from "react";
 import { useStateContext } from "@/contexts";
-import { useCartItems } from "@/hooks/useCartItems";
 
 export default function CartDrawer({
   open,
@@ -55,21 +61,33 @@ export default function CartDrawer({
         <h2>Cart Items</h2>
         {isLoading && (
           <CircularProgress
-            sx={{ display: "block", margin: "auto", marginTop: "20px" } } />)}
+            sx={{ display: "block", margin: "auto", marginTop: "20px" }}
+          />
+        )}
         {error && (
-          <Typography color="error" sx={{ textAlign: "center", marginTop: "20px" }}>
+          <Typography
+            color="error"
+            sx={{ textAlign: "center", marginTop: "20px" }}
+          >
             Error loading cart items: {error.message}
           </Typography>
         )}
-        {!error && !isLoading && userCartItems.map((item) => (
-          <CartItemCard
-            id={item.id}
-            key={item.menuitem}
-            title={item.title}
-            price={item.price}
-            quantity={item.quantity ?? 0}
-          />
-        ))}
+        {!error &&
+          !isLoading &&
+          userCartItems.map((item) => (
+            <CartItemCard
+              id={item.id}
+              key={item.menuitem}
+              title={item.title}
+              price={item.price}
+              quantity={item.quantity ?? 0}
+            />
+          ))}
+        {!error && !isLoading && userCartItems.length === 0 && (
+          <Typography sx={{ textAlign: "center", marginTop: "20px" }}>
+            Your cart is empty.
+          </Typography>
+        )}
       </Container>
     </Drawer>
   );
