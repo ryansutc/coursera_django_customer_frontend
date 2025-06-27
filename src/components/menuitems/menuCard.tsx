@@ -110,14 +110,16 @@ export default function MenuCard({
           }}
         >
           <Grid container justifyContent="center" alignItems="center">
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={!!existingItem}
-              onClick={() => handleAddToCart(id)}
-            >
-              Add to Cart
-            </Button>
+            {user && (
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={!!existingItem}
+                onClick={() => handleAddToCart(id)}
+              >
+                Add to Cart
+              </Button>
+            )}
           </Grid>
         </div>
       </CardContent>
