@@ -9,11 +9,14 @@ import { zodiosAPI } from "@/types/axiosClient";
 
 export const CART_ITEMS_QUERY_KEY = ["cartItems"] as const;
 
-export function useCartItems() {
+export function useCartItems(user: boolean | string | null = false) {
   return useQuery({
-    queryKey: CART_ITEMS_QUERY_KEY,
+    queryKey: ["cartItems", user],
     queryFn: () => zodiosAPI.api_cart_items_list(),
     staleTime: 30 * 1000, // 30 seconds
+    initialData: [],
+    enabled: !!user,
+    select: (data) => data ?? [],
   });
 }
 
@@ -40,7 +43,9 @@ export function useUpdateCartItem() {
     }: {
       id: number;
       data: PatchedCartItemRequestType;
-    }) => zodiosAPI.api_cart_items_partial_update(data, { params: { id } }),
+    }) => {
+      return zodiosAPI.api_cart_items_partial_update(data, { params: { id } });
+    },
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: CART_ITEMS_QUERY_KEY });
 
@@ -56,7 +61,7 @@ export function useUpdateCartItem() {
 
       return { previousCartItems };
     },
-    onError: (err, variables, context) => {
+    onError: (err, _variables, context) => {
       console.warn("Error updating cart item:", err);
       if (context?.previousCartItems) {
         queryClient.setQueryData(
@@ -66,6 +71,7 @@ export function useUpdateCartItem() {
       }
     },
     onSettled: () => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       queryClient.invalidateQueries({ queryKey: CART_ITEMS_QUERY_KEY });
     },
   });
@@ -90,7 +96,7 @@ export function useDeleteCartItem() {
 
       return { previousCartItems };
     },
-    onError: (err, variables, context) => {
+    onError: (err, _variables, context) => {
       console.warn("Error deleting cart item:", err);
       if (context?.previousCartItems) {
         queryClient.setQueryData(
@@ -100,6 +106,7 @@ export function useDeleteCartItem() {
       }
     },
     onSettled: () => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       queryClient.invalidateQueries({ queryKey: CART_ITEMS_QUERY_KEY });
     },
   });

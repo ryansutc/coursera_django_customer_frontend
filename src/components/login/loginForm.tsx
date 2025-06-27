@@ -7,33 +7,43 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useState } from "react";
 import { useStateContext } from "@/contexts";
+import { useCartItems } from "@/hooks/useCartItems";
 import { zodiosAPI } from "@/types/axiosClient";
+import { setToken } from "@/utils/tokenStore"; // Assuming you have a utility function to set the token
+import { useState } from "react";
 
 export default function LoginForm() {
-  const { setUser, setPage } = useStateContext();
+  const { setUser, setPage, user } = useStateContext();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
 
+  const useCartItemsQuery = useCartItems(user);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // we need to hit the REST API login endpoint
 
     if (username && password) {
       try {
-        // @ts-expect-error method does not exist.
         const response = await zodiosAPI.api_token_create({
           username,
           password,
         });
 
-        localStorage.setItem("token", response.access);
-        localStorage.setItem("refreshToken", response.refresh);
+        setToken(response.access);
+        localStorage.setItem("username", username);
         setUser(username);
         setPage("menu");
+        // After login w. success, lets also get the users' cart-items
+        try {
+          await useCartItemsQuery.refetch();
+        } catch (e) {
+          console.error("Failed to fetch cart items:", e);
+          setError("Failed to fetch cart items.");
+          return;
+        }
       } catch (e) {
         console.error("Login failed:", e);
         setError("Invalid username or password.");

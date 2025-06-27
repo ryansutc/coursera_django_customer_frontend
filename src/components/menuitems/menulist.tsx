@@ -1,25 +1,16 @@
+import { useMenuItems } from "@/hooks/useMenuItems";
 import MenuCard from "./menuCard";
-import { useEffect } from "react";
-import { useStateContext } from "@/contexts";
-import { zodiosAPI } from "@/types/axiosClient";
 
 export default function MenuList() {
-  const { menuItems, setMenuItems } = useStateContext();
+  const { data: menuItems = [], isLoading, error } = useMenuItems();
 
-  useEffect(() => {
-    // This is where you would fetch the menu items from an API or context
-    const fetchMenuItems = async () => {
-      try {
-        const menuItems = await zodiosAPI.api_menu_items_list();
+  if (isLoading) {
+    return <div>Loading menu items...</div>;
+  }
 
-        setMenuItems(menuItems);
-      } catch (error) {
-        console.error("Failed to fetch menu items:", error);
-      }
-    };
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    fetchMenuItems();
-  }, [setMenuItems]);
+  if (error) {
+    return <div>Error loading menu items</div>;
+  }
 
   return (
     <div

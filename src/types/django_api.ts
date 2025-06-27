@@ -672,7 +672,7 @@ token pair to prove the authentication of those credentials.`,
         schema: generated.schemas.TokenObtainPairRequest,
       },
     ],
-    response: generated.schemas.TokenObtainPair,
+    response: generated.schemas.CookieTokenObtainPairResponse,
   },
   {
     method: "post",

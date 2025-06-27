@@ -1,26 +1,42 @@
 import React, { useEffect } from "react";
 
-import type { CartItemType } from "@/types/django_api_types";
 import { zodiosAPI } from "@/types/axiosClient";
+import { setToken } from "@/utils/tokenStore";
 
+/**
+ * Hook that will get user info from the API
+ * when the app loads if there is already a token
+ * present in cookies.
+ * @param user
+ * @param setUser
+ */
 export default function useUserInfo(
   user: string | undefined | null,
-  setUser: React.Dispatch<React.SetStateAction<string | null>>,
-  setCartItems: React.Dispatch<React.SetStateAction<CartItemType[]>>
+  setUser: React.Dispatch<React.SetStateAction<string | null>>
 ) {
   useEffect(() => {
     // get user and their cart items if they have a jwt token that works in their
     // local storage
     async function setUserFromToken() {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const me = await zodiosAPI.auth_users_me_retrieve();
-        console.log("User info from token:", me.username);
-        setUser(me.username);
-
-        // Sync our cart w. the server:
-        const cartItems = await zodiosAPI.api_cart_items_list();
-        setCartItems(cartItems);
+      const userinfo = localStorage.getItem("userinfo");
+      if (userinfo) {
+        try {
+          const resp = await zodiosAPI.api_token_refresh_create();
+          setToken(resp.access);
+        } catch (error) {
+          console.error("Error trying to refresh token:", error);
+          localStorage.removeItem("userinfo");
+          return;
+        }
+        try {
+          const me = await zodiosAPI.auth_users_me_retrieve();
+          localStorage.setItem("userinfo", JSON.stringify(me));
+          console.log("User info from token:", me.username);
+          setUser(me.username);
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+          return;
+        }
       }
     }
 

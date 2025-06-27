@@ -1,6 +1,6 @@
-import { Box, IconButton, TextField } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
-import { useState } from "react";
+import { Box, IconButton, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 
 interface NumberInputProps {
   value?: number;
@@ -17,14 +17,18 @@ export default function NumberInput({
   onChange,
   min = 0,
   max = 999,
-  step = 1,
+
   disabled = false,
   size = "small",
 }: NumberInputProps) {
   const [internalValue, setInternalValue] = useState(value);
-  
+
+  useEffect(() => {
+    setInternalValue(value);
+  }, [value]);
+
   const currentValue = onChange ? value : internalValue;
-  
+
   const handleChange = (newValue: number) => {
     const clampedValue = Math.min(Math.max(newValue, min), max);
     if (onChange) {
@@ -35,11 +39,11 @@ export default function NumberInput({
   };
 
   const handleIncrement = () => {
-    handleChange(currentValue + step);
+    handleChange(currentValue + 1);
   };
 
   const handleDecrement = () => {
-    handleChange(currentValue - step);
+    handleChange(currentValue - 1);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +61,7 @@ export default function NumberInput({
       >
         <Remove />
       </IconButton>
-      
+
       <TextField
         value={currentValue}
         onChange={handleInputChange}
@@ -66,7 +70,7 @@ export default function NumberInput({
         inputProps={{
           min,
           max,
-          step,
+          step: 1,
           style: { textAlign: "center" },
         }}
         sx={{
@@ -78,7 +82,7 @@ export default function NumberInput({
           },
         }}
       />
-      
+
       <IconButton
         size={size}
         onClick={handleIncrement}

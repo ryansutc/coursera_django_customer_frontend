@@ -1,13 +1,8 @@
-import type { CartItemType, MenuItemType } from "./types/django_api_types";
 import React, { createContext, useContext } from "react";
 
 import type { PageType } from "./types/state_types";
 
 type StateContextType = {
-  cartItems: CartItemType[];
-  menuItems: MenuItemType[];
-  setMenuItems: React.Dispatch<React.SetStateAction<MenuItemType[]>>;
-  setCartItems: React.Dispatch<React.SetStateAction<CartItemType[]>>;
   page: PageType;
   setPage: React.Dispatch<React.SetStateAction<PageType>>;
   user: string | null;

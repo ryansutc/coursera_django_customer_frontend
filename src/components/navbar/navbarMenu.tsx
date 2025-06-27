@@ -1,18 +1,20 @@
 import { Badge, Button, CircularProgress, Fade, styled } from "@mui/material";
 
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { useState } from "react";
 import { useStateContext } from "@/contexts";
-import { zodiosAPI } from "@/types/axiosClient";
+import { useCartItems } from "@/hooks/useCartItems";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 const StyledButton = styled(Button)(() => ({
   textTransform: "none",
 }));
 
 export default function NavBarMenu() {
-  // page state
-  const { cartItems, page, user, setPage, setUser, setCartOpen, cartOpen } =
+  const { page, user, setPage, setUser, setCartOpen, cartOpen } =
     useStateContext();
+  const queryClient = useQueryClient();
+  const { data: cartItems } = useCartItems(user);
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const handleLoginLogout = async () => {
@@ -22,7 +24,7 @@ export default function NavBarMenu() {
         setIsLoggingOut(true);
 
         // we need to make a method to remove ALL cart items when a user logs out.
-        await zodiosAPI.api_cart_items_delete_destroy();
+        await queryClient.setQueryData(["cartItems", null], []); // Clear cart items
         localStorage.clear();
       } catch (error) {
         console.error("Logout failed:", error);

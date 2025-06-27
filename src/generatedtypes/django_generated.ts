@@ -1,4 +1,4 @@
-import { makeApi } from "@zodios/core";
+import { makeApi, Zodios, type ZodiosOptions } from "@zodios/core";
 import { z } from "zod";
 
 const AuthTokenRequest = z
@@ -102,12 +102,10 @@ const Order = z
 const TokenObtainPairRequest = z
   .object({ username: z.string().min(1), password: z.string().min(1) })
   .strip();
-const TokenObtainPair = z
-  .object({ access: z.string(), refresh: z.string() })
-  .strip();
+const CookieTokenObtainPairResponse = z.object({ access: z.string() }).strip();
 const TokenBlacklistRequest = z.object({ refresh: z.string().min(1) }).strip();
 const TokenRefreshRequest = z.object({ refresh: z.string().min(1) }).strip();
-const TokenRefresh = z.object({ access: z.string() }).strip();
+const CookieTokenRefreshResponse = z.object({ access: z.string() }).strip();
 const TokenCreateRequest = z
   .object({ password: z.string().min(1), username: z.string().min(1) })
   .partial()
@@ -273,10 +271,10 @@ export const schemas = {
   PatchedMenuItemRequest,
   Order,
   TokenObtainPairRequest,
-  TokenObtainPair,
+  CookieTokenObtainPairResponse,
   TokenBlacklistRequest,
   TokenRefreshRequest,
-  TokenRefresh,
+  CookieTokenRefreshResponse,
   TokenCreateRequest,
   TokenCreate,
   User,
@@ -918,8 +916,9 @@ const endpoints = makeApi([
     method: "post",
     path: "/api/token/",
     alias: "api_token_create",
-    description: `Takes a set of user credentials and returns an access and refresh JSON web
-token pair to prove the authentication of those credentials.`,
+    description: `Our override of the simple jwt TokenObtainPairView.
+We choose to set the refresh token in a cookie for better security
+after a user logs in and gets a token`,
     requestFormat: "json",
     parameters: [
       {
@@ -928,7 +927,7 @@ token pair to prove the authentication of those credentials.`,
         schema: TokenObtainPairRequest,
       },
     ],
-    response: TokenObtainPair,
+    response: z.object({ access: z.string() }).strip(),
   },
   {
     method: "post",
@@ -950,8 +949,10 @@ token pair to prove the authentication of those credentials.`,
     method: "post",
     path: "/api/token/refresh/",
     alias: "api_token_refresh_create",
-    description: `Takes a refresh type JSON web token and returns an access type JSON web
-token if the refresh token is valid.`,
+    description: `Our override of the simple jwt TokenRefreshView.
+We choose to get the refresh token from the cookie
+instead of the request body when a client/user tries
+to refresh their token.`,
     requestFormat: "json",
     parameters: [
       {
@@ -1283,3 +1284,9 @@ token if the refresh token is valid.`,
     response: Rating,
   },
 ]);
+
+export const api = new Zodios(endpoints);
+
+export function createApiClient(baseUrl: string, options?: ZodiosOptions) {
+  return new Zodios(baseUrl, endpoints, options);
+}

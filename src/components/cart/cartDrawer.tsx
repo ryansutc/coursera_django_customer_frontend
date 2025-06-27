@@ -7,11 +7,12 @@ import {
   Typography,
 } from "@mui/material";
 
-import CartItemCard from "./cartItemCard";
-import CloseIcon from "@mui/icons-material/Close";
 import { useCartItems } from "@/hooks/useCartItems";
-import { useMemo } from "react";
+import { useMenuItems } from "@/hooks/useMenuItems";
 import { useStateContext } from "@/contexts";
+import CloseIcon from "@mui/icons-material/Close";
+import { useMemo } from "react";
+import CartItemCard from "./cartItemCard";
 
 export default function CartDrawer({
   open,
@@ -20,8 +21,19 @@ export default function CartDrawer({
   open: boolean;
   onClose: () => void;
 }) {
-  const { menuItems } = useStateContext();
-  const { data: cartItems = [], isLoading, error } = useCartItems();
+  const { user } = useStateContext();
+  const {
+    data: menuItems = [],
+    isLoading: isMenuLoading,
+    error: menuError,
+  } = useMenuItems();
+  const {
+    data: cartItems = [],
+    isLoading: isCartLoading,
+    error: cartError,
+  } = useCartItems(user);
+  const isLoading = isMenuLoading || isCartLoading;
+  const error = menuError || cartError;
 
   type UserCartItemType = CartItemType & Pick<MenuItemType, "title" | "price">;
   const handleClose = () => {

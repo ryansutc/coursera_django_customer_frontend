@@ -1,4 +1,10 @@
 import {
+  useAddCartItem,
+  useCartItems,
+  useUpdateCartItem,
+} from "@/hooks/useCartItems";
+import { useStateContext } from "@/contexts";
+import {
   Box,
   Button,
   Card,
@@ -6,9 +12,6 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-
-import { useStateContext } from "@/contexts";
-import { zodiosAPI } from "@/types/axiosClient";
 
 type MenuCardProps = {
   id: number;
@@ -23,37 +26,26 @@ export default function MenuCard({
   category,
   id,
 }: MenuCardProps) {
-  const { cartItems, setCartItems } = useStateContext();
-  const handleAddToCart = async (id: number) => {
+  const { user } = useStateContext();
+  const { data: cartItems } = useCartItems(user);
+  const addCartItemMutation = useAddCartItem();
+  const updateCartItemMutation = useUpdateCartItem();
+  const existingItem = cartItems?.find((v) => v.menuitem === id);
+  const handleAddToCart = (id: number) => {
     // Logic to add the item to the cart
-    console.log(`Added ${title} to cart`);
 
-    try {
-      const existingItem = cartItems.find((v) => v.id === id);
-      let newOrModifiedItem = null;
-      if (!existingItem) {
-        // @ts-expect-error method does not exist.
-        newOrModifiedItem = await zodiosAPI.api_cart_items_create({
-          menuitem: id,
-          quantity: 1,
-        });
-      } else {
-        // @ts-expect-error method does not exist.
-        newOrModifiedItem = await zodiosAPI.api_cart_items_partial_update({
-          menuitem: id,
-          quantity: existingItem?.quantity ? existingItem.quantity + 1 : 1,
-        });
-      }
-
-      setCartItems([
-        ...cartItems.filter((item) => item.id !== id), // Remove existing item if it exists
-        {
-          menuitem: id,
-          quantity: existingItem?.quantity ? existingItem.quantity + 1 : 1,
+    if (!existingItem) {
+      addCartItemMutation.mutate({
+        menuitem: id,
+        quantity: 1,
+      });
+    } else {
+      updateCartItemMutation.mutate({
+        id: existingItem.id,
+        data: {
+          quantity: (existingItem?.quantity ?? 0) + 1,
         },
-      ]);
-    } catch (error) {
-      console.error("Failed to add item to cart:", error.message);
+      });
     }
   };
   return (
@@ -110,6 +102,7 @@ export default function MenuCard({
             <Button
               variant="contained"
               color="primary"
+              disabled={!!existingItem}
               onClick={() => handleAddToCart(id)}
             >
               Add to Cart

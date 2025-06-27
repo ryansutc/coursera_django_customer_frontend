@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosError, type AxiosRequestConfig } from "axios";
-
 import { API_BASE_URL } from "@/utils/environment";
+import { getToken, setToken } from "@/utils/tokenStore";
+import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 
 const TOKEN_REFRESH_URI = "/api/token/refresh/";
 async function refreshToken() {
-  const refreshToken = localStorage.getItem("refreshToken");
-  if (!refreshToken) return null;
   try {
     const response = await axios.post(`${API_BASE_URL}${TOKEN_REFRESH_URI}`, {
       refresh: refreshToken,
     });
-    localStorage.setItem("token", response.data.access);
-    return response.data.access;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    setToken(response.data?.access);
   } catch (e) {
     console.warn("[API warn] Failed to refresh token:", e);
     return null;
@@ -56,7 +54,7 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (token) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
