@@ -72,7 +72,11 @@ export default function LoginForm() {
           <Typography variant="h4" align="center" gutterBottom>
             {isSignUp ? "Sign Up" : "Log In"}
           </Typography>
-          <form onSubmit={handleSubmit}>
+          <form
+            onSubmit={(e) => {
+              void handleSubmit(e);
+            }}
+          >
             <TextField
               label="Username"
               variant="outlined"
