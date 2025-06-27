@@ -16,8 +16,8 @@ import type { PageType } from "./types/state_types";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 10 * 60 * 1000,
+      staleTime: 5 * 60 * 1000,
     },
   },
 });
@@ -34,12 +34,12 @@ function App() {
         <ThemeProvider theme={theme}>
           <StateContext.Provider
             value={{
-              page,
-              setPage,
-              user,
-              setUser,
               cartOpen,
+              page,
               setCartOpen,
+              setPage,
+              setUser,
+              user,
             }}
           >
             <Container
@@ -48,8 +48,12 @@ function App() {
               sx={{
                 display: "flex",
                 flexDirection: "column",
+                gap: {
+                  md: 8,
+                  sm: 6,
+                  xs: 5,
+                },
                 my: 16,
-                gap: { xs: 5, sm: 6, md: 8 },
               }}
             >
               <NavBar />

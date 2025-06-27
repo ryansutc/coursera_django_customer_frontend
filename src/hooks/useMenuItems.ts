@@ -1,4 +1,4 @@
-import { zodiosAPI } from "@/types/axiosClient";
+import { zodiosAPI } from "@/api/axiosClient";
 import { useQuery } from "@tanstack/react-query";
 
 export const MENU_ITEMS_QUERY_KEY = ["menuItems"] as const;

@@ -2,7 +2,7 @@ import { API_BASE_URL } from "@/utils/environment";
 import { Zodios } from "@zodios/core";
 // Import makeAPI from its module or define it here
 import { axiosInstance } from "@/api/axiosInstance";
-import { endpoints } from "@/types/django_api";
+import { endpoints } from "@/generatedtypes/django_generated";
 // Import or define MapItems
 
 /**

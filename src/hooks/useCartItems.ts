@@ -1,22 +1,22 @@
 import type {
-  CartItemRequestType,
-  CartItemType,
-  PatchedCartItemRequestType,
+  CartItem,
+  CartItemRequest,
+  PatchedCartItemRequest,
 } from "@/types/django_api_types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { zodiosAPI } from "@/types/axiosClient";
+import { zodiosAPI } from "@/api/axiosClient";
 
 export const CART_ITEMS_QUERY_KEY = ["cartItems"] as const;
 
 export function useCartItems(user: boolean | string | null = false) {
   return useQuery({
-    queryKey: ["cartItems", user],
-    queryFn: () => zodiosAPI.api_cart_items_list(),
-    staleTime: 30 * 1000, // 30 seconds
-    placeholderData: [],
     enabled: Boolean(user),
+    placeholderData: [],
+    queryFn: () => zodiosAPI.api_cart_items_list(),
+    queryKey: ["cartItems", user],
     select: (data) => data ?? [],
+    staleTime: 30 * 1000, // 30 seconds
   });
 }
 
@@ -24,7 +24,7 @@ export function useAddCartItem() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (item: CartItemRequestType) =>
+    mutationFn: (item: CartItemRequest) =>
       zodiosAPI.api_cart_items_create(item),
     onSuccess: () => {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -42,7 +42,7 @@ export function useUpdateCartItem() {
       data,
     }: {
       id: number;
-      data: PatchedCartItemRequestType;
+      data: PatchedCartItemRequest;
     }) => {
       return zodiosAPI.api_cart_items_partial_update(data, { params: { id } });
     },
@@ -50,9 +50,9 @@ export function useUpdateCartItem() {
       await queryClient.cancelQueries({ queryKey: CART_ITEMS_QUERY_KEY });
 
       const previousCartItems =
-        queryClient.getQueryData<CartItemType[]>(CART_ITEMS_QUERY_KEY);
+        queryClient.getQueryData<CartItem[]>(CART_ITEMS_QUERY_KEY);
 
-      queryClient.setQueryData<CartItemType[]>(CART_ITEMS_QUERY_KEY, (old) => {
+      queryClient.setQueryData<CartItem[]>(CART_ITEMS_QUERY_KEY, (old) => {
         if (!old) return old;
         return old.map((item) =>
           item.id === id ? { ...item, ...data } : item
@@ -87,9 +87,9 @@ export function useDeleteCartItem() {
       await queryClient.cancelQueries({ queryKey: CART_ITEMS_QUERY_KEY });
 
       const previousCartItems =
-        queryClient.getQueryData<CartItemType[]>(CART_ITEMS_QUERY_KEY);
+        queryClient.getQueryData<CartItem[]>(CART_ITEMS_QUERY_KEY);
 
-      queryClient.setQueryData<CartItemType[]>(CART_ITEMS_QUERY_KEY, (old) => {
+      queryClient.setQueryData<CartItem[]>(CART_ITEMS_QUERY_KEY, (old) => {
         if (!old) return old;
         return old.filter((item) => item.id !== id);
       });

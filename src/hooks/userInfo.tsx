@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { zodiosAPI } from "@/types/axiosClient";
+import { zodiosAPI } from "@/api/axiosClient";
 import { setToken } from "@/utils/tokenStore";
 
 /**

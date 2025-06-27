@@ -1,4 +1,3 @@
-import type { CartItemType, MenuItemType } from "@/types/django_api_types";
 import {
   Button,
   CircularProgress,
@@ -7,15 +6,16 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import type { CartItem, MenuItem } from "@/types/django_api_types";
 import { useMemo, useState } from "react";
 
-import { useStateContext } from "@/contexts";
+import CartItemCard from "./cartItemCard";
+import CloseIcon from "@mui/icons-material/Close";
 import { useCartItems } from "@/hooks/useCartItems";
 import { useMenuItems } from "@/hooks/useMenuItems";
-import { zodiosAPI } from "@/types/axiosClient";
-import CloseIcon from "@mui/icons-material/Close";
 import { useQueryClient } from "@tanstack/react-query";
-import CartItemCard from "./cartItemCard";
+import { useStateContext } from "@/contexts";
+import { zodiosAPI } from "@/api/axiosClient";
 
 export default function CartDrawer({
   open,
@@ -42,7 +42,7 @@ export default function CartDrawer({
   const isLoading = isMenuLoading || isCartLoading;
   const error = menuError || cartError;
 
-  type UserCartItemType = CartItemType & Pick<MenuItemType, "title" | "price">;
+  type UserCartItem = CartItem & Pick<MenuItem, "title" | "price">;
   const handleClose = () => {
     onClose(); // Call the onClose function passed as a prop
   };
@@ -50,8 +50,7 @@ export default function CartDrawer({
   const handlePlaceOrder = async () => {
     try {
       setIsPlacingOrder(true);
-      const response = await zodiosAPI.api_checkout(undefined);
-      console.log("Order placed successfully:", response);
+      await zodiosAPI.api_checkout(undefined);
 
       // Clear cart items from cache after successful checkout
       queryClient.setQueryData(["cartItems", user], []);
@@ -69,7 +68,7 @@ export default function CartDrawer({
       setIsPlacingOrder(false);
     }
   };
-  const userCartItems: UserCartItemType[] | [] = useMemo(() => {
+  const userCartItems: UserCartItem[] | [] = useMemo(() => {
     // Keep the list of cart items in sync.
     return cartItems.map((cartItem) => {
       const menuItem = menuItems.find((item) => item.id === cartItem.menuitem);
@@ -78,8 +77,8 @@ export default function CartDrawer({
       }
       return {
         ...cartItem,
-        title: menuItem.title,
         price: menuItem.price,
+        title: menuItem.title,
       };
     });
   }, [cartItems, menuItems]);
@@ -109,7 +108,10 @@ export default function CartDrawer({
         {error && (
           <Typography
             color="error"
-            sx={{ textAlign: "center", marginTop: "20px" }}
+            sx={{
+              marginTop: "20px",
+              textAlign: "center",
+            }}
           >
             Error loading cart items: {error.message}
           </Typography>
@@ -126,7 +128,12 @@ export default function CartDrawer({
             />
           ))}
         {!error && !isLoading && userCartItems.length === 0 && (
-          <Typography sx={{ textAlign: "center", marginTop: "20px" }}>
+          <Typography
+            sx={{
+              marginTop: "20px",
+              textAlign: "center",
+            }}
+          >
             Your cart is empty.
           </Typography>
         )}
@@ -136,10 +143,10 @@ export default function CartDrawer({
           fullWidth
           disabled={userCartItems.length === 0 || isPlacingOrder}
           sx={{
-            marginTop: "20px",
             marginBottom: "20px",
+            marginTop: "20px",
           }}
-          onClick={handlePlaceOrder}
+          onClick={() => void handlePlaceOrder()}
         >
           {isPlacingOrder ? (
             <CircularProgress size={24} color="inherit" />

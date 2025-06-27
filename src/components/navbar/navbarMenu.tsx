@@ -1,9 +1,9 @@
 import { Badge, Button, CircularProgress, Fade, styled } from "@mui/material";
 import { useMemo, useState } from "react";
 
+import { zodiosAPI } from "@/api/axiosClient";
 import { useStateContext } from "@/contexts";
 import { useCartItems } from "@/hooks/useCartItems";
-import { zodiosAPI } from "@/types/axiosClient";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useQueryClient } from "@tanstack/react-query";
 import LogoutDialog from "./LogoutDialog";

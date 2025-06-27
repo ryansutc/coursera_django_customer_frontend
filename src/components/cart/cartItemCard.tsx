@@ -12,7 +12,7 @@ export default function CartItemCard({
 }: {
   id: number;
   title: string;
-  price: number;
+  price: string;
   quantity: number;
 }) {
   const updateCartItem = useUpdateCartItem();
@@ -20,8 +20,10 @@ export default function CartItemCard({
 
   const handleQuantityChange = (newQuantity: number) => {
     updateCartItem.mutate({
+      data: {
+        quantity: newQuantity,
+      },
       id,
-      data: { quantity: newQuantity },
     });
   };
 
@@ -35,7 +37,10 @@ export default function CartItemCard({
         container
         size={12}
         spacing={2}
-        sx={{ minHeight: "40px", margin: "12px" }}
+        sx={{
+          margin: "12px",
+          minHeight: "40px",
+        }}
       >
         <Grid size={4} sx={{ bgcolor: "secondary.light" }}>
           {/* Cart item content goes here */}
@@ -45,16 +50,14 @@ export default function CartItemCard({
           {/* Cart item content goes here */}
           <Box
             sx={{
+              alignItems: "flex-start",
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "flex-start",
             }}
           >
             <Box>
               <Typography variant="h6">{title}</Typography>
-              <Typography variant="body1">
-                Price: ${price.toFixed(2)}
-              </Typography>
+              <Typography variant="body1">Price: ${price}</Typography>
               <NumberInput
                 value={quantity}
                 onChange={handleQuantityChange}

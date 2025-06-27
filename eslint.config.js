@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  { ignores: ["dist", "./src/generatedtypes/**/*"] },
   {
     extends: [
       js.configs.recommended,
@@ -31,6 +31,29 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
+      "no-console": [
+        "warn",
+        {
+          allow: ["warn", "error"],
+        },
+      ],
+      camelcase: [
+        "warn",
+        {
+          ignoreGlobals: true,
+          ignoreImports: true,
+        },
+      ],
+      "sort-imports": [
+        "warn",
+        {
+          ignoreDeclarationSort: true,
+          allowSeparatedGroups: true,
+        },
+      ],
+      "one-var": ["warn", "never"],
+      "no-else-return": ["warn"],
+      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     },
   }
 );

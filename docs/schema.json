@@ -1,0 +1,894 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "API Schemas",
+  "type": "object",
+  "properties": {
+    "AuthTokenRequest": {
+      "$ref": "#/definitions/AuthTokenRequest"
+    },
+    "AuthToken": {
+      "$ref": "#/definitions/AuthToken"
+    },
+    "CartItem": {
+      "$ref": "#/definitions/CartItem"
+    },
+    "CartItemRequest": {
+      "$ref": "#/definitions/CartItemRequest"
+    },
+    "PatchedCartItemRequest": {
+      "$ref": "#/definitions/PatchedCartItemRequest"
+    },
+    "CheckoutResponse": {
+      "$ref": "#/definitions/CheckoutResponse"
+    },
+    "Category": {
+      "$ref": "#/definitions/Category"
+    },
+    "CategoryRequest": {
+      "$ref": "#/definitions/CategoryRequest"
+    },
+    "PatchedCategoryRequest": {
+      "$ref": "#/definitions/PatchedCategoryRequest"
+    },
+    "MenuItem": {
+      "$ref": "#/definitions/MenuItem"
+    },
+    "MenuItemRequest": {
+      "$ref": "#/definitions/MenuItemRequest"
+    },
+    "PatchedMenuItemRequest": {
+      "$ref": "#/definitions/PatchedMenuItemRequest"
+    },
+    "Order": {
+      "$ref": "#/definitions/Order"
+    },
+    "TokenObtainPairRequest": {
+      "$ref": "#/definitions/TokenObtainPairRequest"
+    },
+    "CookieTokenObtainPairResponse": {
+      "$ref": "#/definitions/CookieTokenObtainPairResponse"
+    },
+    "TokenBlacklistRequest": {
+      "$ref": "#/definitions/TokenBlacklistRequest"
+    },
+    "TokenRefreshRequest": {
+      "$ref": "#/definitions/TokenRefreshRequest"
+    },
+    "CookieTokenRefreshResponse": {
+      "$ref": "#/definitions/CookieTokenRefreshResponse"
+    },
+    "TokenCreateRequest": {
+      "$ref": "#/definitions/TokenCreateRequest"
+    },
+    "TokenCreate": {
+      "$ref": "#/definitions/TokenCreate"
+    },
+    "User": {
+      "$ref": "#/definitions/User"
+    },
+    "UserCreateRequest": {
+      "$ref": "#/definitions/UserCreateRequest"
+    },
+    "UserCreate": {
+      "$ref": "#/definitions/UserCreate"
+    },
+    "UserRequest": {
+      "$ref": "#/definitions/UserRequest"
+    },
+    "PatchedUserRequest": {
+      "$ref": "#/definitions/PatchedUserRequest"
+    },
+    "ActivationRequest": {
+      "$ref": "#/definitions/ActivationRequest"
+    },
+    "Activation": {
+      "$ref": "#/definitions/Activation"
+    },
+    "SendEmailResetRequest": {
+      "$ref": "#/definitions/SendEmailResetRequest"
+    },
+    "SendEmailReset": {
+      "$ref": "#/definitions/SendEmailReset"
+    },
+    "PasswordResetConfirmRequest": {
+      "$ref": "#/definitions/PasswordResetConfirmRequest"
+    },
+    "PasswordResetConfirm": {
+      "$ref": "#/definitions/PasswordResetConfirm"
+    },
+    "UsernameResetConfirmRequest": {
+      "$ref": "#/definitions/UsernameResetConfirmRequest"
+    },
+    "UsernameResetConfirm": {
+      "$ref": "#/definitions/UsernameResetConfirm"
+    },
+    "SetPasswordRequest": {
+      "$ref": "#/definitions/SetPasswordRequest"
+    },
+    "SetPassword": {
+      "$ref": "#/definitions/SetPassword"
+    },
+    "SetUsernameRequest": {
+      "$ref": "#/definitions/SetUsernameRequest"
+    },
+    "SetUsername": {
+      "$ref": "#/definitions/SetUsername"
+    },
+    "Rating": {
+      "$ref": "#/definitions/Rating"
+    },
+    "RatingRequest": {
+      "$ref": "#/definitions/RatingRequest"
+    }
+  },
+  "definitions": {
+    "AuthTokenRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "username",
+        "password"
+      ],
+      "additionalProperties": false
+    },
+    "AuthToken": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "token"
+      ],
+      "additionalProperties": false
+    },
+    "CartItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "menuitem": {
+          "type": "integer"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 40
+        }
+      },
+      "required": [
+        "id",
+        "menuitem"
+      ],
+      "additionalProperties": false
+    },
+    "CartItemRequest": {
+      "type": "object",
+      "properties": {
+        "menuitem": {
+          "type": "integer"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 40
+        }
+      },
+      "required": [
+        "menuitem"
+      ],
+      "additionalProperties": false
+    },
+    "PatchedCartItemRequest": {
+      "type": "object",
+      "properties": {
+        "menuitem": {
+          "type": "integer"
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 40
+        }
+      },
+      "additionalProperties": false
+    },
+    "CheckoutResponse": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "type": "string"
+        },
+        "order_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "detail",
+        "order_id"
+      ],
+      "additionalProperties": false
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "slug": {
+          "type": "string",
+          "maxLength": 50,
+          "pattern": "^[-a-zA-Z0-9_]+$"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "slug"
+      ],
+      "additionalProperties": false
+    },
+    "CategoryRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "pattern": "^[-a-zA-Z0-9_]+$"
+        }
+      },
+      "required": [
+        "title",
+        "slug"
+      ],
+      "additionalProperties": false
+    },
+    "PatchedCategoryRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "pattern": "^[-a-zA-Z0-9_]+$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "MenuItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "price": {
+          "type": "string",
+          "pattern": "^-?\\d{0,4}(?:\\.\\d{0,2})?$"
+        },
+        "inventory": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "price_after_tax": {
+          "type": "string"
+        },
+        "category": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "title": {
+              "type": "string",
+              "maxLength": 255
+            },
+            "slug": {
+              "type": "string",
+              "maxLength": 50,
+              "pattern": "^[-a-zA-Z0-9_]+$"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "slug"
+          ],
+          "additionalProperties": false
+        },
+        "featured": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "price",
+        "price_after_tax",
+        "category"
+      ],
+      "additionalProperties": false
+    },
+    "MenuItemRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "price": {
+          "type": "string",
+          "pattern": "^-?\\d{0,4}(?:\\.\\d{0,2})?$"
+        },
+        "inventory": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "category_id": {
+          "type": "integer"
+        },
+        "featured": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "title",
+        "price",
+        "category_id"
+      ],
+      "additionalProperties": false
+    },
+    "PatchedMenuItemRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "price": {
+          "type": "string",
+          "pattern": "^-?\\d{0,4}(?:\\.\\d{0,2})?$"
+        },
+        "inventory": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 400
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "category_id": {
+          "type": "integer"
+        },
+        "featured": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Order": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "integer"
+        },
+        "delivery_crew": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "total": {
+          "type": "string",
+          "pattern": "^-?\\d{0,4}(?:\\.\\d{0,2})?$"
+        },
+        "date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "user",
+        "total",
+        "date"
+      ],
+      "additionalProperties": false
+    },
+    "TokenObtainPairRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "username",
+        "password"
+      ],
+      "additionalProperties": false
+    },
+    "CookieTokenObtainPairResponse": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "access"
+      ],
+      "additionalProperties": false
+    },
+    "TokenBlacklistRequest": {
+      "type": "object",
+      "properties": {
+        "refresh": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "refresh"
+      ],
+      "additionalProperties": false
+    },
+    "TokenRefreshRequest": {
+      "type": "object",
+      "properties": {
+        "refresh": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "refresh"
+      ],
+      "additionalProperties": false
+    },
+    "CookieTokenRefreshResponse": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "access"
+      ],
+      "additionalProperties": false
+    },
+    "TokenCreateRequest": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string",
+          "minLength": 1
+        },
+        "username": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "TokenCreate": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 254,
+          "format": "email"
+        },
+        "username": {
+          "type": "string",
+          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        }
+      },
+      "required": [
+        "username"
+      ],
+      "additionalProperties": false
+    },
+    "UserCreateRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 254,
+          "format": "email"
+        },
+        "username": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 150,
+          "pattern": "^[\\w.@+-]+$",
+          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        },
+        "password": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "username",
+        "password"
+      ],
+      "additionalProperties": false
+    },
+    "UserCreate": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 254,
+          "format": "email"
+        },
+        "username": {
+          "type": "string",
+          "maxLength": 150,
+          "pattern": "^[\\w.@+-]+$",
+          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        }
+      },
+      "required": [
+        "username"
+      ],
+      "additionalProperties": false
+    },
+    "UserRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 254,
+          "format": "email"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PatchedUserRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "maxLength": 254,
+          "format": "email"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ActivationRequest": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "uid",
+        "token"
+      ],
+      "additionalProperties": false
+    },
+    "Activation": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "uid",
+        "token"
+      ],
+      "additionalProperties": false
+    },
+    "SendEmailResetRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "minLength": 1,
+          "format": "email"
+        }
+      },
+      "required": [
+        "email"
+      ],
+      "additionalProperties": false
+    },
+    "SendEmailReset": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
+      },
+      "required": [
+        "email"
+      ],
+      "additionalProperties": false
+    },
+    "PasswordResetConfirmRequest": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "new_password": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "uid",
+        "token",
+        "new_password"
+      ],
+      "additionalProperties": false
+    },
+    "PasswordResetConfirm": {
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "new_password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "uid",
+        "token",
+        "new_password"
+      ],
+      "additionalProperties": false
+    },
+    "UsernameResetConfirmRequest": {
+      "type": "object",
+      "properties": {
+        "new_username": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 150,
+          "pattern": "^[\\w.@+-]+$",
+          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        }
+      },
+      "required": [
+        "new_username"
+      ],
+      "additionalProperties": false
+    },
+    "UsernameResetConfirm": {
+      "type": "object",
+      "properties": {
+        "new_username": {
+          "type": "string",
+          "maxLength": 150,
+          "pattern": "^[\\w.@+-]+$",
+          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        }
+      },
+      "required": [
+        "new_username"
+      ],
+      "additionalProperties": false
+    },
+    "SetPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "new_password": {
+          "type": "string",
+          "minLength": 1
+        },
+        "current_password": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "new_password",
+        "current_password"
+      ],
+      "additionalProperties": false
+    },
+    "SetPassword": {
+      "type": "object",
+      "properties": {
+        "new_password": {
+          "type": "string"
+        },
+        "current_password": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "new_password",
+        "current_password"
+      ],
+      "additionalProperties": false
+    },
+    "SetUsernameRequest": {
+      "type": "object",
+      "properties": {
+        "current_password": {
+          "type": "string",
+          "minLength": 1
+        },
+        "new_username": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 150,
+          "pattern": "^[\\w.@+-]+$",
+          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        }
+      },
+      "required": [
+        "current_password",
+        "new_username"
+      ],
+      "additionalProperties": false
+    },
+    "SetUsername": {
+      "type": "object",
+      "properties": {
+        "current_password": {
+          "type": "string"
+        },
+        "new_username": {
+          "type": "string",
+          "maxLength": 150,
+          "pattern": "^[\\w.@+-]+$",
+          "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        }
+      },
+      "required": [
+        "current_password",
+        "new_username"
+      ],
+      "additionalProperties": false
+    },
+    "Rating": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "integer"
+        },
+        "menuitem_id": {
+          "type": "integer",
+          "minimum": -9223372036854776000,
+          "maximum": 9223372036854776000
+        },
+        "rating": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
+      },
+      "required": [
+        "menuitem_id",
+        "rating"
+      ],
+      "additionalProperties": false
+    },
+    "RatingRequest": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "integer"
+        },
+        "menuitem_id": {
+          "type": "integer",
+          "minimum": -9223372036854776000,
+          "maximum": 9223372036854776000
+        },
+        "rating": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
+      },
+      "required": [
+        "menuitem_id",
+        "rating"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

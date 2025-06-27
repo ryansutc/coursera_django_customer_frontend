@@ -1,10 +1,4 @@
 import {
-  useAddCartItem,
-  useCartItems,
-  useUpdateCartItem,
-} from "@/hooks/useCartItems";
-import { useStateContext } from "@/contexts";
-import {
   Box,
   Button,
   Card,
@@ -12,6 +6,13 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import {
+  useAddCartItem,
+  useCartItems,
+  useUpdateCartItem,
+} from "@/hooks/useCartItems";
+
+import { useStateContext } from "@/contexts";
 
 type MenuCardProps = {
   id: number;
@@ -30,7 +31,9 @@ export default function MenuCard({
   const { data: cartItems } = useCartItems(user);
   const addCartItemMutation = useAddCartItem();
   const updateCartItemMutation = useUpdateCartItem();
-  const existingItem = cartItems?.find((v) => v.menuitem === id);
+  const existingItem = cartItems
+    ? cartItems.find((v) => v.menuitem === id)
+    : undefined;
   const handleAddToCart = (id: number) => {
     // Logic to add the item to the cart
 
@@ -41,43 +44,46 @@ export default function MenuCard({
       });
     } else {
       updateCartItemMutation.mutate({
-        id: existingItem.id,
         data: {
           quantity: (existingItem?.quantity ?? 0) + 1,
         },
+        id: existingItem.id,
       });
     }
   };
   return (
     <Card
       sx={{
-        transition: "filter 0.1s ",
-        margin: "8px",
-        marginBottom: "16px",
         "&:hover": {
           backgroundColor: "action.selectedHover",
           filter: "brightness(0.95)",
         },
+        borderRadius: {
+          sm: "12px",
+          xs: "8px",
+        },
         color: "secondary.contrastText",
-        borderRadius: { xs: "8px", sm: "12px" },
+        margin: "8px",
+        marginBottom: "16px",
+        transition: "filter 0.1s ",
         width: "100%",
       }}
     >
       <div
         style={{
-          maxHeight: "400px",
-          overflow: "hidden",
+          alignItems: "center",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
+          maxHeight: "400px",
+          overflow: "hidden",
         }}
       >
         <Box
           title={title}
           sx={{
-            width: "110%",
             bgcolor: "secondary.light",
             height: "200px",
+            width: "110%",
           }}
         />
       </div>
@@ -97,7 +103,12 @@ export default function MenuCard({
           {category}
         </Typography>
 
-        <div style={{ marginTop: "16px", marginBottom: "16px" }}>
+        <div
+          style={{
+            marginBottom: "16px",
+            marginTop: "16px",
+          }}
+        >
           <Grid container justifyContent="center" alignItems="center">
             <Button
               variant="contained"

@@ -73,7 +73,10 @@ axiosInstance.interceptors.response.use(
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
+          failedQueue.push({
+            reject,
+            resolve,
+          });
         })
           .then(async (token) => {
             if (!originalRequest.headers) {
@@ -98,12 +101,11 @@ axiosInstance.interceptors.response.use(
         }
         originalRequest.headers["Authorization"] = "Bearer " + String(newToken);
         return axiosInstance(originalRequest);
-      } else {
-        processQueue(error, null);
-        localStorage.clear();
-        // Optionally, redirect to login
-        return Promise.reject(error);
       }
+      processQueue(error, null);
+      localStorage.clear();
+      // Optionally, redirect to login
+      return Promise.reject(error);
     }
     console.error("[API Error]", error.response || error.message);
     return Promise.reject(error);

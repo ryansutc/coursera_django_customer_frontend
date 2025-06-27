@@ -7,9 +7,9 @@ import {
   Typography,
 } from "@mui/material";
 
+import { zodiosAPI } from "@/api/axiosClient";
 import { useStateContext } from "@/contexts";
 import { useCartItems } from "@/hooks/useCartItems";
-import { zodiosAPI } from "@/types/axiosClient";
 import { setToken } from "@/utils/tokenStore"; // Assuming you have a utility function to set the token
 import { useState } from "react";
 
