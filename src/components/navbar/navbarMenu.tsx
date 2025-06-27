@@ -1,10 +1,10 @@
 import { Badge, Button, CircularProgress, Fade, styled } from "@mui/material";
+import { useMemo, useState } from "react";
 
 import { useStateContext } from "@/contexts";
 import { useCartItems } from "@/hooks/useCartItems";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 
 const StyledButton = styled(Button)(() => ({
   textTransform: "none",
@@ -16,6 +16,14 @@ export default function NavBarMenu() {
   const queryClient = useQueryClient();
   const { data: cartItems } = useCartItems(user);
 
+  const cartQuantity = useMemo(() => {
+    if (cartItems && cartItems.length > 0) {
+      return cartItems.reduce(
+        (total, item) => total + (item?.quantity ?? 0),
+        0
+      );
+    } else return 0;
+  }, [cartItems]);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const handleLoginLogout = async () => {
     if (user) {
@@ -55,12 +63,12 @@ export default function NavBarMenu() {
             variant="text"
             color="primary"
             sx={{
-              color: cartItems.length ? "primary.main" : "primary.dark",
+              color: cartItems?.length ? "primary.main" : "primary.dark",
             }}
             onClick={() => setCartOpen(!cartOpen)}
           >
             Cart{" "}
-            <Badge badgeContent={cartItems.length} color="error">
+            <Badge badgeContent={cartQuantity} color="error">
               <ShoppingCartIcon fontSize="small" />
             </Badge>
           </StyledButton>

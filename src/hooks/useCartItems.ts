@@ -14,8 +14,8 @@ export function useCartItems(user: boolean | string | null = false) {
     queryKey: ["cartItems", user],
     queryFn: () => zodiosAPI.api_cart_items_list(),
     staleTime: 30 * 1000, // 30 seconds
-    initialData: [],
-    enabled: !!user,
+    placeholderData: [],
+    enabled: Boolean(user),
     select: (data) => data ?? [],
   });
 }

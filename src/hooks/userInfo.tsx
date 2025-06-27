@@ -20,26 +20,25 @@ export default function useUserInfo(
     const username = localStorage.getItem("username");
 
     async function setUserFromToken() {
-      if (username) {
-        try {
-          const resp = await zodiosAPI.api_token_refresh_create(undefined, {
-            withCredentials: true,
-          });
-          setToken(resp.access);
-        } catch (error) {
-          console.error("Error trying to refresh token:", error);
-          localStorage.removeItem("username");
-          return;
-        }
-        try {
-          const me = await zodiosAPI.auth_users_me_retrieve();
-          localStorage.setItem("username", JSON.stringify(me));
-          console.log("User info from token:", me.username);
-          setUser(me.username);
-        } catch (error) {
-          console.error("Error fetching user info:", error);
-          return;
-        }
+      try {
+        const resp = await zodiosAPI.api_token_refresh_create(undefined, {
+          withCredentials: true,
+        });
+        setToken(resp.access);
+      } catch (error) {
+        console.error("Error trying to refresh token:", error);
+        localStorage.removeItem("username");
+        return;
+      }
+
+      try {
+        const me = await zodiosAPI.auth_users_me_retrieve();
+        localStorage.setItem("username", JSON.stringify(me));
+        console.log("User info from token:", me.username);
+        setUser(me.username);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+        return;
       }
     }
 

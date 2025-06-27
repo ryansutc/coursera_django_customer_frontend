@@ -7,6 +7,7 @@ import NavBar from "@components/navbar/navbar";
 import { ThemeProvider } from "@emotion/react";
 import { Container } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import theme from "@utils/muitheme";
 import { useState } from "react";
 import { StateContext } from "./contexts";
@@ -55,6 +56,7 @@ function App() {
               <MainWrapper />
             </Container>
           </StateContext.Provider>
+          <ReactQueryDevtools initialIsOpen={true} />
         </ThemeProvider>
       </QueryClientProvider>
     </>
