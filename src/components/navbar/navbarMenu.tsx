@@ -3,8 +3,10 @@ import { useMemo, useState } from "react";
 
 import { useStateContext } from "@/contexts";
 import { useCartItems } from "@/hooks/useCartItems";
+import { zodiosAPI } from "@/types/axiosClient";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useQueryClient } from "@tanstack/react-query";
+import LogoutDialog from "./LogoutDialog";
 
 const StyledButton = styled(Button)(() => ({
   textTransform: "none",
@@ -25,23 +27,48 @@ export default function NavBarMenu() {
     } else return 0;
   }, [cartItems]);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+
   const handleLoginLogout = async () => {
     if (user) {
-      // Logout logic
-      try {
-        setIsLoggingOut(true);
-
-        // we need to make a method to remove ALL cart items when a user logs out.
-        await queryClient.setQueryData(["cartItems", null], []); // Clear cart items
-        localStorage.clear();
-      } catch (error) {
-        console.error("Logout failed:", error);
-      } finally {
-        setTimeout(() => setIsLoggingOut(false), 500);
+      // Check if user has items in cart
+      if (cartItems?.length) {
+        setShowLogoutDialog(true);
+        return;
       }
+      // Proceed with logout if no cart items
+      await performLogout();
+    } else {
+      setPage("login");
+    }
+  };
+
+  const performLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      // Clear cart items for the current user
+      await zodiosAPI.api_cart_items_delete_destroy(undefined);
+      queryClient.setQueryData(["cartItems", user], []);
+      // Remove all cart-related queries
+      queryClient.removeQueries({ queryKey: ["cartItems"] });
+      localStorage.clear();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setTimeout(() => setIsLoggingOut(false), 500);
     }
     setPage("login");
+    setCartOpen(false);
     setUser(null);
+  };
+
+  const handleConfirmLogout = () => {
+    setShowLogoutDialog(false);
+    void performLogout();
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutDialog(false);
   };
   return (
     <>
@@ -93,6 +120,13 @@ export default function NavBarMenu() {
           )}
         </StyledButton>
       </Fade>
+
+      <LogoutDialog
+        open={showLogoutDialog}
+        cartQuantity={cartQuantity}
+        onConfirm={handleConfirmLogout}
+        onCancel={handleCancelLogout}
+      />
     </>
   );
 }

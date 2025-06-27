@@ -51,5 +51,5 @@ export default function useUserInfo(
         console.error("Error setting user from token:", error);
       }
     }
-  }, [user]);
+  }, [user, setUser]);
 }

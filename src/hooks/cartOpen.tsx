@@ -11,7 +11,8 @@ export function useCartOpenOnChange(
   useEffect(() => {
     if (
       prevItemsRef.current !== cartItems &&
-      prevItemsRef.current.length !== cartItems.length
+      prevItemsRef.current.length !== cartItems.length &&
+      cartItems.length > prevItemsRef.current.length
     ) {
       setCartOpen(true);
     }
