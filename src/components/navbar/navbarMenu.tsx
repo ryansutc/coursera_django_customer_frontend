@@ -81,7 +81,7 @@ export default function NavBarMenu() {
           sx={{
             color: page === "login" ? "primary.main" : "primary.dark",
           }}
-          onClick={handleLoginLogout}
+          onClick={() => void handleLoginLogout()}
           title={user ? user : "Login to make an order!"}
         >
           {isLoggingOut ? (
