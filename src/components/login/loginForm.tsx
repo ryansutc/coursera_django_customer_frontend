@@ -27,10 +27,15 @@ export default function LoginForm() {
 
     if (username && password) {
       try {
-        const response = await zodiosAPI.api_token_create({
-          username,
-          password,
-        });
+        const response = await zodiosAPI.api_token_create(
+          {
+            username,
+            password,
+          },
+          {
+            withCredentials: true,
+          }
+        );
 
         setToken(response.access);
         localStorage.setItem("username", username);

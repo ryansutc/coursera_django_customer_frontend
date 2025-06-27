@@ -697,13 +697,13 @@ token pair to prove the authentication of those credentials.`,
     description: `Takes a refresh type JSON web token and returns an access type JSON web
 token if the refresh token is valid.`,
     requestFormat: "json",
-    parameters: [
-      {
-        name: "body",
-        type: "Body",
-        schema: z.object({ refresh: z.string().min(1) }).passthrough(),
-      },
-    ],
+    // parameters: [
+    //   {
+    //     name: "body",
+    //     type: "Body",
+    //     schema: z.object({ refresh: z.string().min(1) }).passthrough(),
+    //   },
+    // ],
     response: z.object({ access: z.string() }).passthrough(),
   },
   {

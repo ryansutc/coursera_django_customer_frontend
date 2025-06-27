@@ -17,20 +17,23 @@ export default function useUserInfo(
   useEffect(() => {
     // get user and their cart items if they have a jwt token that works in their
     // local storage
+    const username = localStorage.getItem("username");
+
     async function setUserFromToken() {
-      const userinfo = localStorage.getItem("userinfo");
-      if (userinfo) {
+      if (username) {
         try {
-          const resp = await zodiosAPI.api_token_refresh_create();
+          const resp = await zodiosAPI.api_token_refresh_create(undefined, {
+            withCredentials: true,
+          });
           setToken(resp.access);
         } catch (error) {
           console.error("Error trying to refresh token:", error);
-          localStorage.removeItem("userinfo");
+          localStorage.removeItem("username");
           return;
         }
         try {
           const me = await zodiosAPI.auth_users_me_retrieve();
-          localStorage.setItem("userinfo", JSON.stringify(me));
+          localStorage.setItem("username", JSON.stringify(me));
           console.log("User info from token:", me.username);
           setUser(me.username);
         } catch (error) {
@@ -40,7 +43,7 @@ export default function useUserInfo(
       }
     }
 
-    if (!user && localStorage.getItem("token")) {
+    if (!user && username) {
       // If user is not set and there is a token, try to set user from token
       try {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
