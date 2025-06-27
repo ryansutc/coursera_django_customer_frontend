@@ -72,18 +72,20 @@ axiosInstance.interceptors.response.use(
       !originalRequest.url.endsWith(TOKEN_REFRESH_URI)
     ) {
       if (isRefreshing) {
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then((token) => {
+          .then(async (token) => {
             if (!originalRequest.headers) {
               originalRequest.headers = {};
             }
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             originalRequest.headers["Authorization"] = "Bearer " + token;
-            return axiosInstance(originalRequest);
+            return await axiosInstance(originalRequest);
           })
-          .catch((err) => Promise.reject(err));
+          .catch((err) => {
+            throw err;
+          });
       }
       originalRequest._retry = true;
       isRefreshing = true;
@@ -91,7 +93,10 @@ axiosInstance.interceptors.response.use(
       isRefreshing = false;
       processQueue(null, newToken);
       if (newToken) {
-        originalRequest.headers["Authorization"] = "Bearer " + newToken;
+        if (!originalRequest.headers) {
+          originalRequest.headers = {};
+        }
+        originalRequest.headers["Authorization"] = "Bearer " + String(newToken);
         return axiosInstance(originalRequest);
       } else {
         processQueue(error, null);
