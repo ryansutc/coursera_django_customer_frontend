@@ -1,27 +1,34 @@
 import type { CartItemType, MenuItemType } from "@/types/django_api_types";
 import {
+  Button,
   CircularProgress,
   Container,
   Drawer,
   IconButton,
   Typography,
 } from "@mui/material";
+import { useMemo, useState } from "react";
 
+import { useStateContext } from "@/contexts";
 import { useCartItems } from "@/hooks/useCartItems";
 import { useMenuItems } from "@/hooks/useMenuItems";
-import { useStateContext } from "@/contexts";
+import { zodiosAPI } from "@/types/axiosClient";
 import CloseIcon from "@mui/icons-material/Close";
-import { useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import CartItemCard from "./cartItemCard";
 
 export default function CartDrawer({
   open,
   onClose,
+  setShowSuccessToast,
 }: {
   open: boolean;
   onClose: () => void;
+  setShowSuccessToast: (show: boolean) => void;
 }) {
   const { user } = useStateContext();
+  const queryClient = useQueryClient();
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const {
     data: menuItems = [],
     isLoading: isMenuLoading,
@@ -38,6 +45,29 @@ export default function CartDrawer({
   type UserCartItemType = CartItemType & Pick<MenuItemType, "title" | "price">;
   const handleClose = () => {
     onClose(); // Call the onClose function passed as a prop
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      setIsPlacingOrder(true);
+      const response = await zodiosAPI.api_checkout(undefined);
+      console.log("Order placed successfully:", response);
+
+      // Clear cart items from cache after successful checkout
+      queryClient.setQueryData(["cartItems", user], []);
+      queryClient.removeQueries({ queryKey: ["cartItems"] });
+
+      // Close the drawer
+      onClose();
+
+      // Show success toast
+      setShowSuccessToast(true);
+    } catch (error) {
+      console.error("Failed to place order:", error);
+      // TODO: Add proper error handling/toast notification
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
   const userCartItems: UserCartItemType[] | [] = useMemo(() => {
     // Keep the list of cart items in sync.
@@ -100,6 +130,23 @@ export default function CartDrawer({
             Your cart is empty.
           </Typography>
         )}
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          disabled={userCartItems.length === 0 || isPlacingOrder}
+          sx={{
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+          onClick={handlePlaceOrder}
+        >
+          {isPlacingOrder ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Place Order"
+          )}
+        </Button>
       </Container>
     </Drawer>
   );

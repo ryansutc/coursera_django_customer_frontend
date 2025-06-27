@@ -2,7 +2,8 @@ import { useStateContext } from "@/contexts";
 import { useCartOpenOnChange } from "@/hooks/cartOpen";
 import { useCartItems } from "@/hooks/useCartItems";
 import useUserInfo from "@/hooks/userInfo";
-import { Grid } from "@mui/material";
+import { Alert, Grid, Snackbar } from "@mui/material";
+import { useState } from "react";
 import CartDrawer from "../cart/cartDrawer";
 import LoginForm from "../login/loginForm";
 import MenuList from "../menuitems/menulist";
@@ -12,6 +13,7 @@ export default function MainWrapper() {
 
   const { page, user, cartOpen, setCartOpen, setUser } = useStateContext();
   const { data: cartItems = [] } = useCartItems(user);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   useCartOpenOnChange(cartItems, setCartOpen);
   useUserInfo(user, setUser);
@@ -32,8 +34,23 @@ export default function MainWrapper() {
             // I want to first save any changed cart item values back to the server
             setCartOpen(false);
           }}
+          setShowSuccessToast={setShowSuccessToast}
         />
       ) : null}
+      <Snackbar
+        open={showSuccessToast}
+        autoHideDuration={3000}
+        onClose={() => setShowSuccessToast(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setShowSuccessToast(false)} 
+          severity="success" 
+          sx={{ width: '100%' }}
+        >
+          Order placed successfully!
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }

@@ -56,7 +56,7 @@ function App() {
               <MainWrapper />
             </Container>
           </StateContext.Provider>
-          <ReactQueryDevtools initialIsOpen={true} />
+          <ReactQueryDevtools initialIsOpen={false} />
         </ThemeProvider>
       </QueryClientProvider>
     </>
