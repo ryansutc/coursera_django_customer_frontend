@@ -2,7 +2,7 @@ import { Add, Remove } from "@mui/icons-material";
 import { Box, IconButton, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
-interface NumberInputProps {
+type NumberInputProps = {
   value?: number;
   onChange?: (value: number) => void;
   min?: number;
@@ -10,7 +10,7 @@ interface NumberInputProps {
   step?: number;
   disabled?: boolean;
   size?: "small" | "medium";
-}
+};
 
 export default function NumberInput({
   value = 0,

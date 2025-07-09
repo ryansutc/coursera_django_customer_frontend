@@ -1,7 +1,10 @@
 ## Little Lemon Restaurant App - Frontend for Coursera Django Course API
 
-This is a rough example app exploring how to create a frontend client based upon a modern OpenAPI / Swagger specification for a REST API app. The client follows a strict
-contract with the REST API and can easily remain in sync with changes.
+This is a rough example app exploring how to create a frontend client based upon a modern [OpenAPI / Swagger](https://swagger.io/) specification from a REST API app (my restaurant app- [coursera_django](https://github.com/ryansutc/coursera_django)). The client adheres to a strict
+contract with the REST API and can easily remain in sync with schema and endpoint changes. The app itself is a React SPA.
+
+- Queries with the API are managed with [TanStack Query](https://tanstack.com/query/latest) instead of Redux/RTK
+- Client State is managed via [Zustand](https://github.com/pmndrs/zustand) instead of Redux.
 
 #### Details
 

@@ -1,5 +1,5 @@
-import { useMenuItems } from "@/hooks/useMenuItems";
 import MenuCard from "./menuCard";
+import { useMenuItems } from "@/hooks/useMenuItems";
 
 export default function MenuList() {
   const { data: menuItems = [], isLoading, error } = useMenuItems();
@@ -26,7 +26,7 @@ export default function MenuList() {
         <MenuCard
           key={item.id}
           title={item.title}
-          price={item.price}
+          price={parseFloat(item.price)}
           id={item.id}
           inventory={10} // Assuming a static inventory for now
           category="Main Course" // Assuming a static category for now
