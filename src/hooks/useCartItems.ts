@@ -27,7 +27,6 @@ export function useAddCartItem() {
     mutationFn: (item: CartItemRequest) =>
       zodiosAPI.api_cart_items_create(item),
     onSuccess: () => {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       queryClient.invalidateQueries({ queryKey: CART_ITEMS_QUERY_KEY });
     },
   });
@@ -71,7 +70,6 @@ export function useUpdateCartItem() {
       }
     },
     onSettled: () => {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       queryClient.invalidateQueries({ queryKey: CART_ITEMS_QUERY_KEY });
     },
   });
@@ -106,7 +104,6 @@ export function useDeleteCartItem() {
       }
     },
     onSettled: () => {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       queryClient.invalidateQueries({ queryKey: CART_ITEMS_QUERY_KEY });
     },
   });

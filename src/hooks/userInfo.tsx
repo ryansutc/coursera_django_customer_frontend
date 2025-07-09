@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-
-import { zodiosAPI } from "@/api/axiosClient";
+import type { State } from "@/state/store";
 import { setToken } from "@/utils/tokenStore";
+import { useEffect } from "react";
+import { zodiosAPI } from "@/api/axiosClient";
 
 /**
  * Hook that will get user info from the API
@@ -12,7 +12,7 @@ import { setToken } from "@/utils/tokenStore";
  */
 export default function useUserInfo(
   user: string | undefined | null,
-  setUser: React.Dispatch<React.SetStateAction<string | null>>
+  setUser: State["setUser"]
 ) {
   useEffect(() => {
     // get user and their cart items if they have a jwt token that works in their
@@ -34,7 +34,7 @@ export default function useUserInfo(
       try {
         const me = await zodiosAPI.auth_users_me_retrieve();
         localStorage.setItem("username", JSON.stringify(me));
-        console.log("User info from token:", me.username);
+
         setUser(me.username);
       } catch (error) {
         console.error("Error fetching user info:", error);
@@ -45,7 +45,6 @@ export default function useUserInfo(
     if (!user && username) {
       // If user is not set and there is a token, try to set user from token
       try {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         setUserFromToken();
       } catch (error) {
         console.error("Error setting user from token:", error);

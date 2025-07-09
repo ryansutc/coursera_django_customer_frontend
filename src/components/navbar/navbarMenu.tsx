@@ -1,20 +1,19 @@
 import { Badge, Button, CircularProgress, Fade, styled } from "@mui/material";
 import { useMemo, useState } from "react";
 
-import { zodiosAPI } from "@/api/axiosClient";
-import { useStateContext } from "@/contexts";
-import { useCartItems } from "@/hooks/useCartItems";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { useQueryClient } from "@tanstack/react-query";
 import LogoutDialog from "./LogoutDialog";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useCartItems } from "@/hooks/useCartItems";
+import { useQueryClient } from "@tanstack/react-query";
+import { useStore } from "@/state/store";
+import { zodiosAPI } from "@/api/axiosClient";
 
 const StyledButton = styled(Button)(() => ({
   textTransform: "none",
 }));
 
 export default function NavBarMenu() {
-  const { page, user, setPage, setUser, setCartOpen, cartOpen } =
-    useStateContext();
+  const { page, user, setPage, setUser, setCartOpen, cartOpen } = useStore();
   const queryClient = useQueryClient();
   const { data: cartItems } = useCartItems(user);
 
@@ -24,7 +23,8 @@ export default function NavBarMenu() {
         (total, item) => total + (item?.quantity ?? 0),
         0
       );
-    } else return 0;
+    }
+    return 0;
   }, [cartItems]);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);

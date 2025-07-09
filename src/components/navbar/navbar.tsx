@@ -1,10 +1,9 @@
-import { Divider } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
+import { Divider } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import NavBarMenu from "./navbarMenu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-
-import NavBarMenu from "./navbarMenu";
 
 export default function NavBar() {
   return (

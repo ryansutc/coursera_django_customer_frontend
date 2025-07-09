@@ -1,17 +1,18 @@
-import { useStateContext } from "@/contexts";
-import { useCartOpenOnChange } from "@/hooks/cartOpen";
-import { useCartItems } from "@/hooks/useCartItems";
-import useUserInfo from "@/hooks/userInfo";
 import { Alert, Grid, Snackbar } from "@mui/material";
-import { useState } from "react";
+
 import CartDrawer from "../cart/cartDrawer";
 import LoginForm from "../login/loginForm";
 import MenuList from "../menuitems/menulist";
+import { useCartItems } from "@/hooks/useCartItems";
+import { useCartOpenOnChange } from "@/hooks/cartOpen";
+import { useState } from "react";
+import { useStore } from "@/state/store";
+import useUserInfo from "@/hooks/userInfo";
 
 export default function MainWrapper() {
   // page state
 
-  const { page, user, cartOpen, setCartOpen, setUser } = useStateContext();
+  const { page, user, cartOpen, setCartOpen, setUser } = useStore();
   const { data: cartItems = [] } = useCartItems(user);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
@@ -41,12 +42,12 @@ export default function MainWrapper() {
         open={showSuccessToast}
         autoHideDuration={3000}
         onClose={() => setShowSuccessToast(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert 
-          onClose={() => setShowSuccessToast(false)} 
-          severity="success" 
-          sx={{ width: '100%' }}
+        <Alert
+          onClose={() => setShowSuccessToast(false)}
+          severity="success"
+          sx={{ width: "100%" }}
         >
           Order placed successfully!
         </Alert>

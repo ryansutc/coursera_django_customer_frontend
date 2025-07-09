@@ -12,7 +12,7 @@ import {
   useUpdateCartItem,
 } from "@/hooks/useCartItems";
 
-import { useStateContext } from "@/contexts";
+import { useStore } from "@/state/store";
 
 type MenuCardProps = {
   id: number;
@@ -27,7 +27,7 @@ export default function MenuCard({
   category,
   id,
 }: MenuCardProps) {
-  const { user } = useStateContext();
+  const user = useStore((state) => state.user);
   const { data: cartItems } = useCartItems(user);
   const addCartItemMutation = useAddCartItem();
   const updateCartItemMutation = useUpdateCartItem();

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import type { CartItemType } from "@/types/django_api_types";
+import type { CartItem as CartItemType } from "@/types/django_api_types";
 
 export function useCartOpenOnChange(
   cartItems: CartItemType[],

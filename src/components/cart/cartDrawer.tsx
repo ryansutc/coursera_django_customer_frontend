@@ -3,6 +3,7 @@ import {
   CircularProgress,
   Container,
   Drawer,
+  Grid,
   IconButton,
   Typography,
 } from "@mui/material";
@@ -14,7 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useCartItems } from "@/hooks/useCartItems";
 import { useMenuItems } from "@/hooks/useMenuItems";
 import { useQueryClient } from "@tanstack/react-query";
-import { useStateContext } from "@/contexts";
+import { useStore } from "@/state/store";
 import { zodiosAPI } from "@/api/axiosClient";
 
 export default function CartDrawer({
@@ -26,7 +27,7 @@ export default function CartDrawer({
   onClose: () => void;
   setShowSuccessToast: (show: boolean) => void;
 }) {
-  const { user } = useStateContext();
+  const user = useStore((state) => state.user);
   const queryClient = useQueryClient();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const {
@@ -137,6 +138,21 @@ export default function CartDrawer({
             Your cart is empty.
           </Typography>
         )}
+        <Grid container spacing={2} sx={{ marginTop: "20px" }}>
+          <Grid size={6}>
+            <Typography variant="h6">Total:</Typography>
+          </Grid>
+          <Grid size={6} textAlign="right">
+            <Typography variant="h6">
+              {userCartItems.reduce(
+                (total, item) =>
+                  total + (parseFloat(item.price) ?? 0) * (item.quantity ?? 0),
+                0
+              )}{" "}
+              USD
+            </Typography>
+          </Grid>
+        </Grid>
         <Button
           variant="contained"
           color="primary"

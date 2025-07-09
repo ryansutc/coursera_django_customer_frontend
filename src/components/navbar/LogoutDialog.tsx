@@ -7,12 +7,12 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-interface LogoutDialogProps {
+type LogoutDialogProps = {
   open: boolean;
   cartQuantity: number;
   onConfirm: () => void;
   onCancel: () => void;
-}
+};
 
 export default function LogoutDialog({
   open,
@@ -27,13 +27,12 @@ export default function LogoutDialog({
       aria-labelledby="logout-dialog-title"
       aria-describedby="logout-dialog-description"
     >
-      <DialogTitle id="logout-dialog-title">
-        Confirm Logout
-      </DialogTitle>
+      <DialogTitle id="logout-dialog-title">Confirm Logout</DialogTitle>
       <DialogContent>
         <DialogContentText id="logout-dialog-description">
-          You have {cartQuantity} item{cartQuantity !== 1 ? 's' : ''} in your cart. 
-          If you log out, your cart will be lost. Are you sure you want to continue?
+          You have {cartQuantity} item{cartQuantity !== 1 ? "s" : ""} in your
+          cart. If you log out, your cart will be lost. Are you sure you want to
+          continue?
         </DialogContentText>
       </DialogContent>
       <DialogActions>

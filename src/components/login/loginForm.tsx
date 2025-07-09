@@ -7,14 +7,17 @@ import {
   Typography,
 } from "@mui/material";
 
-import { zodiosAPI } from "@/api/axiosClient";
-import { useStateContext } from "@/contexts";
-import { useCartItems } from "@/hooks/useCartItems";
 import { setToken } from "@/utils/tokenStore"; // Assuming you have a utility function to set the token
+import { useCartItems } from "@/hooks/useCartItems";
 import { useState } from "react";
+import { useStore } from "@/state/store";
+import { zodiosAPI } from "@/api/axiosClient";
 
 export default function LoginForm() {
-  const { setUser, setPage, user } = useStateContext();
+  const user = useStore((state) => state.user);
+  const setUser = useStore((state) => state.setUser);
+  const setPage = useStore((state) => state.setPage);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
